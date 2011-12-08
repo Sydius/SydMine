@@ -2,6 +2,7 @@
 
 #include <boost/asio.hpp>
 #include "client.hpp"
+#include "eid.hpp"
 
 class Server
 {

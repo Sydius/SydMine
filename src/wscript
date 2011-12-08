@@ -2,6 +2,7 @@ sources = [
     'main.cpp',
     'server.cpp',
     'client.cpp',
+    'eid.cpp',
 ]
 
 def configure(conf):
