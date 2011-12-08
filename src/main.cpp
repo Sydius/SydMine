@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
 {
     int port = 0;
     namespace po = boost::program_options;
-    po::options_description desc("Allowed options");
+    po::options_description desc{"Allowed options"};
     desc.add_options()
         ("help", "produce help message")
         ("port", po::value<int>(&port)->default_value(25565), "port to listen on")
@@ -64,7 +64,7 @@ int main(int argc, char * argv[])
 #endif
 
     boost::asio::io_service ioService;
-    Server server(ioService, port);
+    Server server{ioService, port};
 
     auto time = std::chrono::monotonic_clock::now();
     while (keepGoing) {
