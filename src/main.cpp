@@ -3,9 +3,11 @@
 #include <signal.h> // for sigterm
 #endif
 
+#include <boost/program_options.hpp>
 #include <chrono>
 #include <thread>
 #include <cstdlib>
+#include <iostream>
 #include "server.hpp"
 
 #define TICK_DURATION 50
@@ -34,7 +36,30 @@ bool daemonize(void)
 
 int main(int argc, char * argv[])
 {
-    if (!daemonize()) return EXIT_FAILURE;
+    namespace po = boost::program_options;
+    po::options_description desc("Allowed options");
+    desc.add_options()
+        ("help", "produce help message")
+#ifdef __linux
+        ("daemonize", "daemonize process")
+#endif
+    ;
+
+    po::variables_map vm;
+    po::store(po::parse_command_line(argc, argv, desc), vm);
+    po::notify(vm);
+
+    if (vm.count("help")) {
+        std::cout << desc << "\n";
+        return EXIT_SUCCESS;
+    }
+
+#ifdef __linux
+    if (vm.count("daemonize"))
+    {
+        if (!daemonize()) return EXIT_FAILURE;
+    }
+#endif
 
     boost::asio::io_service ioService;
     Server server(ioService);

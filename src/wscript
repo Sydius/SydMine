@@ -10,6 +10,6 @@ def build(bld):
     bld.program(
         source=sources,
         target='sydmine',
-        lib=['boost_system-mt'],
+        lib=['boost_system-mt', 'boost_program_options-mt'],
         defines=['_GLIBCXX_USE_NANOSLEEP'],
         cxxflags='-O3 --std=c++0x --pedantic -Wall -Wfatal-errors -Weffc++')
