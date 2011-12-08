@@ -36,7 +36,12 @@ class Client
     private:
         Client(boost::asio::io_service & ioService);
 
+        bool isReadDone(const boost::system::error_code & error, std::size_t bytes_transferred);
+        void handleRead(const boost::system::error_code & error, std::size_t bytes_transferred);
+
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;
         State m_state;
+        boost::asio::streambuf m_incoming;
+        boost::asio::streambuf m_outgoing;
 };
