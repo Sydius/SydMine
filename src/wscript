@@ -1,9 +1,14 @@
+sources = [
+    'main.cpp',
+    'server.cpp',
+]
+
 def configure(conf):
     pass
 
 def build(bld):
     bld.program(
-        source='main.cpp',
+        source=sources,
         target='sydmine',
         lib=['boost_system-mt'],
         cxxflags='-O3 --std=c++0x --pedantic -Wall -Wfatal-errors -Weffc++')

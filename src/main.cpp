@@ -1,18 +1,21 @@
-#include <boost/asio.hpp>
 #include <chrono>
 #include <iostream>
+#include "server.hpp"
 
 int main(int argc, char * argv[])
 {
     boost::asio::io_service ioService;
+    Server server(ioService);
 
     auto time = std::chrono::monotonic_clock::now();
-    while (true) {
+    bool keepGoing = true;
+    while (keepGoing) {
         static const auto duration = std::chrono::milliseconds(50);
-        if (std::chrono::monotonic_clock::now() - time > duration) {
+        while (std::chrono::monotonic_clock::now() - time > duration) {
             time += duration;
 
-            std::cout << "tick\n";
+            keepGoing = server.tick();
+            if (!keepGoing) break;
         }
         ioService.poll();
     }
