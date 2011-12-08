@@ -5,7 +5,10 @@
 class Server
 {
     public:
-        Server(boost::asio::io_service &ioService, int port);
+        Server(boost::asio::io_service & ioService, int port);
 
         bool tick(void);
+
+    private:
+        boost::asio::io_service & m_ioService;
 };
