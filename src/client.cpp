@@ -9,7 +9,8 @@ Client::~Client()
 
 void Client::read(void)
 {
-    m_state = CONNECTED;
+    if (m_state == LISTENING)
+        m_state = CONNECTED;
 }
 
 Client::Client(boost::asio::io_service & ioService)
