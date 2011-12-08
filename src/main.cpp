@@ -1,11 +1,27 @@
+#ifdef __linux
+#include <unistd.h> // for daemon
+#endif
+
 #include <chrono>
 #include <thread>
+#include <cstdlib>
 #include "server.hpp"
 
 #define TICK_DURATION 50
 
+bool daemonize(void)
+{
+#ifdef __linux
+    if (!daemon(0,0)) return true;
+    else return false;
+#endif
+    return true;
+}
+
 int main(int argc, char * argv[])
 {
+    if (!daemonize()) return EXIT_FAILURE;
+
     boost::asio::io_service ioService;
     Server server(ioService);
 
@@ -25,5 +41,5 @@ int main(int argc, char * argv[])
         std::this_thread::sleep_until(nextFrame);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
