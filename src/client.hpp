@@ -8,6 +8,11 @@ class Client
 {
     public:
         typedef std::shared_ptr<Client> pointer;
+        typedef enum {
+            LISTENING,
+            CONNECTED,
+            DISCONNECTED
+        } State;
 
         static pointer create(boost::asio::io_service & ioService)
         {
@@ -24,6 +29,8 @@ class Client
             m_eid = eid;
         }
 
+        void read(void);
+
         ~Client();
 
     private:
@@ -31,4 +38,5 @@ class Client
 
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;
+        State m_state;
 };

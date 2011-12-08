@@ -32,6 +32,7 @@ void Server::handleAccept(Client::pointer newClient,
         newClient->setEID(clientEID);
 
         LOG_NOTICE << "client connected (EID " << clientEID << "): " << newClient->socket().remote_endpoint() << "\n";
+        newClient->read();
 
         accept();
     } else {
