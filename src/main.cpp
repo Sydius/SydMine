@@ -1,5 +1,6 @@
 #ifdef __linux
 #include <unistd.h> // for daemon
+#include <signal.h> // for sigterm
 #endif
 
 #include <chrono>
@@ -9,10 +10,23 @@
 
 #define TICK_DURATION 50
 
+// When false, stop the main loop
+bool keepGoing = true;
+
+#ifdef __linux
+void term(int signum)
+{
+    keepGoing = false;
+}
+#endif
+
 bool daemonize(void)
 {
 #ifdef __linux
-    if (!daemon(0,0)) return true;
+    if (!daemon(0,0)) {
+        signal(SIGTERM, term);
+        return true;
+    }
     else return false;
 #endif
     return true;
@@ -26,7 +40,6 @@ int main(int argc, char * argv[])
     Server server(ioService);
 
     auto time = std::chrono::monotonic_clock::now();
-    bool keepGoing = true;
     while (keepGoing) {
         static const auto duration = std::chrono::milliseconds(TICK_DURATION);
         auto nextFrame = time + duration;
