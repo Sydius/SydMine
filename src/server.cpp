@@ -1,10 +1,12 @@
 #include "server.hpp"
+#include "logging.hpp"
 
 Server::Server(boost::asio::io_service & ioService, int port)
     : m_acceptor(ioService, boost::asio::ip::tcp::endpoint(
                 boost::asio::ip::tcp::v4(), port))
     , m_clients()
 {
+    LOG_NOTICE << "accepting connections at " << m_acceptor.local_endpoint() << "\n";
     accept();
 }
 
@@ -28,6 +30,8 @@ void Server::handleAccept(Client::pointer newClient,
         EID clientEID = generateNewEID();
         m_clients[clientEID] = newClient;
         newClient->setEID(clientEID);
+
+        LOG_NOTICE << "client connected (EID " << clientEID << "): " << newClient->socket().remote_endpoint() << "\n";
 
         accept();
     } else {
