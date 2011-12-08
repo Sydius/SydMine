@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/asio.hpp>
+#include "client.hpp"
 
 class Server
 {
@@ -10,5 +11,7 @@ class Server
         bool tick(void);
 
     private:
-        boost::asio::io_service & m_ioService;
+        void accept(void);
+
+        boost::asio::ip::tcp::acceptor m_acceptor;
 };
