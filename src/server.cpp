@@ -15,4 +15,17 @@ bool Server::tick(void)
 void Server::accept(void)
 {
     Client::pointer newClient = Client::create(m_acceptor.io_service());
+
+    m_acceptor.async_accept(newClient->socket(),
+            std::bind(&Server::handleAccept, this, newClient, std::placeholders::_1));
+}
+
+void Server::handleAccept(Client::pointer newClient,
+        const boost::system::error_code & error)
+{
+    if (!error) {
+
+    } else {
+        // TODO: Log
+    }
 }

@@ -12,6 +12,8 @@ class Server
 
     private:
         void accept(void);
+        void handleAccept(Client::pointer newClient,
+                const boost::system::error_code & error);
 
         boost::asio::ip::tcp::acceptor m_acceptor;
 };

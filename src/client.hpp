@@ -13,5 +13,13 @@ class Client
             return pointer(new Client(ioService));
         }
 
+        boost::asio::ip::tcp::socket & socket(void)
+        {
+            return m_socket;
+        }
+
+    private:
         Client(boost::asio::io_service & ioService);
+
+        boost::asio::ip::tcp::socket m_socket;
 };
