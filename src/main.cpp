@@ -63,18 +63,22 @@ int main(int argc, char * argv[])
     }
 #endif
 
-    boost::asio::io_service ioService;
-    Server server(ioService, port);
+    try {
+        boost::asio::io_service ioService;
+        Server server(ioService, port);
 
-    auto time = std::chrono::monotonic_clock::now();
-    while (keepGoing) {
-        static const auto duration = std::chrono::milliseconds(TICK_DURATION);
-        auto nextFrame = time + duration;
+        auto time = std::chrono::monotonic_clock::now();
+        while (keepGoing) {
+            static const auto duration = std::chrono::milliseconds(TICK_DURATION);
+            auto nextFrame = time + duration;
 
-        ioService.poll();
-        keepGoing = server.tick();
+            ioService.poll();
+            keepGoing = server.tick();
 
-        std::this_thread::sleep_until(nextFrame);
+            std::this_thread::sleep_until(nextFrame);
+        }
+    } catch (std::exception & e) {
+        std::cerr << e.what() << std::endl;
     }
 
     return EXIT_SUCCESS;
