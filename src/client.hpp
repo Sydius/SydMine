@@ -24,6 +24,8 @@ class Client
             m_eid = eid;
         }
 
+        ~Client();
+
     private:
         Client(boost::asio::io_service & ioService);
 
