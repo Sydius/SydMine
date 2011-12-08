@@ -2,7 +2,7 @@ def configure(conf):
     pass
 
 def build(bld):
-    bld.new_task_gen(
-            features='cxx cprogram',
-            source='main.cpp',
-            target='sydmine')
+    bld.program(
+        source='main.cpp',
+        target='sydmine',
+        lib=['boost_system-mt'])
