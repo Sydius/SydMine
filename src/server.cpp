@@ -3,6 +3,7 @@
 Server::Server(boost::asio::io_service & ioService, int port)
     : m_acceptor(ioService, boost::asio::ip::tcp::endpoint(
                 boost::asio::ip::tcp::v4(), port))
+    , m_clients()
 {
     accept();
 }
@@ -24,7 +25,9 @@ void Server::handleAccept(Client::pointer newClient,
         const boost::system::error_code & error)
 {
     if (!error) {
-
+        EID clientEID = generateNewEID();
+        m_clients[clientEID] = newClient;
+        newClient->setEID(clientEID);
     } else {
         // TODO: Log
     }

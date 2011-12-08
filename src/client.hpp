@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <boost/asio.hpp>
+#include "eid.hpp"
 
 class Client
 {
@@ -18,8 +19,14 @@ class Client
             return m_socket;
         }
 
+        void setEID(EID eid)
+        {
+            m_eid = eid;
+        }
+
     private:
         Client(boost::asio::io_service & ioService);
 
         boost::asio::ip::tcp::socket m_socket;
+        EID m_eid;
 };
