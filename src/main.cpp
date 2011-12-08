@@ -68,13 +68,9 @@ int main(int argc, char * argv[])
     while (keepGoing) {
         static const auto duration = std::chrono::milliseconds(TICK_DURATION);
         auto nextFrame = time + duration;
-        if (std::chrono::monotonic_clock::now() > nextFrame) {
-            time += duration;
 
-            keepGoing = server.tick();
-            if (!keepGoing) break;
-        }
         ioService.poll();
+        keepGoing = server.tick();
 
         std::this_thread::sleep_until(nextFrame);
     }
