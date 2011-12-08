@@ -28,6 +28,8 @@ void Server::handleAccept(Client::pointer newClient,
         EID clientEID = generateNewEID();
         m_clients[clientEID] = newClient;
         newClient->setEID(clientEID);
+
+        accept();
     } else {
         // TODO: Log
     }
