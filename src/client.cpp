@@ -28,8 +28,32 @@ Client::Client(boost::asio::io_service & ioService)
     , m_readNeeded(1)
     , m_data()
     , m_dataItem(0)
+    , m_writing(false)
 {
     LOG_DEBUG << "client created\n";
+}
+
+void Client::writeIfNeeded(void)
+{
+    if (m_writing || !m_outgoing.size()) {
+        return;
+    }
+
+    m_writing = true;
+
+    boost::asio::async_write(m_socket, m_outgoing,
+            std::bind(&Client::handleWrite, this, std::placeholders::_1));
+}
+
+void Client::handleWrite(const boost::system::error_code & error)
+{
+    if (error) {
+        m_state = DISCONNECTED;
+        return;
+    }
+
+    m_writing = false;
+    writeIfNeeded();
 }
 
 void Client::handleRead(const boost::system::error_code & error)
@@ -62,6 +86,8 @@ void Client::handleRead(const boost::system::error_code & error)
     } else {
         read();
     }
+
+    writeIfNeeded();
 }
 
 // Template helper

@@ -44,12 +44,14 @@ class Client
             return m_state;
         }
 
+        void writeIfNeeded(void);
+
         ~Client();
 
     private:
         Client(boost::asio::io_service & ioService);
 
-        bool isReadDone(const boost::system::error_code & error, std::size_t bytes_transferred);
+        void handleWrite(const boost::system::error_code & error);
         void handleRead(const boost::system::error_code & error);
 
         bool get(mcByte & b);
@@ -78,4 +80,6 @@ class Client
         typedef std::vector<mcLargest> DataList;
         DataList m_data;
         unsigned int m_dataItem;
+
+        bool m_writing;
 };
