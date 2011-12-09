@@ -2,6 +2,8 @@
 
 #include <istream>
 #include <ostream>
+#include <utf8.h>
+#include <locale>
 #include "logging.hpp"
 
 Client::~Client()
@@ -184,4 +186,17 @@ void Client::set(mcDouble d)
 void Client::set(mcCommandType c)
 {
     setHelper(c, m_outgoing);
+}
+
+void Client::setString(const std::string & str)
+{
+    set(mcShort(str.length()));
+
+    std::u16string utf16;
+    
+    utf8::utf8to16(str.begin(), str.end(), std::back_inserter(utf16));
+
+    for (mcShort c: utf16) {
+        set(c);
+    }
 }

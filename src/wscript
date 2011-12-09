@@ -15,4 +15,5 @@ def build(bld):
         target='sydmine',
         lib=['boost_system-mt', 'boost_program_options-mt'],
         defines=['_GLIBCXX_USE_NANOSLEEP'],
+        includes=['../third-party/utf8/source'],
         cxxflags='-O3 --std=c++0x --pedantic -Wall -Wfatal-errors -Weffc++')
