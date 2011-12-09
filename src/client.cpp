@@ -50,7 +50,11 @@ void Client::handleRead(const boost::system::error_code & error)
 
     m_readNeeded = 1;
     m_data.clear();
-    read();
+    if (m_incoming.size()) {
+        handleRead(error);
+    } else {
+        read();
+    }
 }
 
 // Template helper
