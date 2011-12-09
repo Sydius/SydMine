@@ -3,6 +3,7 @@ sources = [
     'server.cpp',
     'client.cpp',
     'eid.cpp',
+    'netutil.cpp',
 ]
 
 def configure(conf):

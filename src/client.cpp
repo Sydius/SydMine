@@ -1,6 +1,7 @@
 #include "client.hpp"
 
 #include <istream>
+#include <ostream>
 #include "logging.hpp"
 
 Client::~Client()
@@ -46,6 +47,13 @@ void Client::handleRead(const boost::system::error_code & error)
     if (!get(command)) return read();
 
     LOG_DEBUG << "got command: " << unsigned(command) << "\n";
+    switch (command) {
+        case 0xFE: // Server list ping
+            break;
+        default:
+            // TODO: send kick
+            break;
+    }
 
     m_readNeeded = 1;
     m_data.clear();
@@ -74,12 +82,50 @@ bool getHelper(T & x, Client::DataList & m_data, unsigned int & m_dataItem, boos
     return true;
 }
 
+bool Client::get(mcByte & b)
+{
+    return getHelper(b, m_data, m_dataItem, m_incoming, m_readNeeded);
+}
+
+bool Client::get(mcShort & s)
+{
+    return ntohs(getHelper(s, m_data, m_dataItem, m_incoming, m_readNeeded));
+}
+
+bool Client::get(mcInt & i)
+{
+    return ntohl(getHelper(i, m_data, m_dataItem, m_incoming, m_readNeeded));
+}
+
+bool Client::get(mcLong & l)
+{
+    return ntohll(getHelper(l, m_data, m_dataItem, m_incoming, m_readNeeded));
+}
+
+bool Client::get(mcFloat & f)
+{
+    return ntohl(getHelper(f, m_data, m_dataItem, m_incoming, m_readNeeded));
+}
+
+bool Client::get(mcDouble & d)
+{
+    return ntohll(getHelper(d, m_data, m_dataItem, m_incoming, m_readNeeded));
+}
+
 bool Client::get(mcCommandType & c)
 {
     return getHelper(c, m_data, m_dataItem, m_incoming, m_readNeeded);
 }
 
-bool Client::get(mcByte & b)
+// Template helper
+template<class T>
+void setHelper(T & x, boost::asio::streambuf & m_outgoing)
 {
-    return getHelper(b, m_data, m_dataItem, m_incoming, m_readNeeded);
+    std::ostream outputStream(&m_outgoing);
+    outputStream.write(reinterpret_cast<char *>(&x), sizeof(T));
+}
+
+void Client::set(mcCommandType & c)
+{
+    setHelper(c, m_outgoing);
 }

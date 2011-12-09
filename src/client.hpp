@@ -5,6 +5,7 @@
 #include <boost/asio.hpp>
 #include "eid.hpp"
 #include "types.hpp"
+#include "netutil.hpp"
 
 class Client
 {
@@ -51,8 +52,15 @@ class Client
         bool isReadDone(const boost::system::error_code & error, std::size_t bytes_transferred);
         void handleRead(const boost::system::error_code & error);
 
-        bool get(mcCommandType & c);
         bool get(mcByte & b);
+        bool get(mcShort & s);
+        bool get(mcInt & i);
+        bool get(mcLong & l);
+        bool get(mcFloat & f);
+        bool get(mcDouble & d);
+        bool get(mcCommandType & c);
+
+        void set(mcCommandType & c);
 
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;
