@@ -1,0 +1,3 @@
+For custom GCC 4.6:
+CXX=g++4.6 LDFLAGS='-Wl,-rpath=/usr/local/gcc4.6/lib64' ./waf configure
+
