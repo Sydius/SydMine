@@ -10,7 +10,7 @@
 #include <iostream>
 #include "server.hpp"
 
-#define TICK_DURATION 50
+#define TICK_DURATION 80
 
 // When false, stop the main loop
 bool keepGoing = true;
