@@ -41,6 +41,7 @@ class Client
         bool isReadDone(const boost::system::error_code & error, std::size_t bytes_transferred);
         void handleRead(const boost::system::error_code & error);
 
+        bool get(mcCommandType & c);
         bool get(mcByte & b);
 
         boost::asio::ip::tcp::socket m_socket;

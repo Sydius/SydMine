@@ -33,6 +33,11 @@ Client::Client(boost::asio::io_service & ioService)
 
 void Client::handleRead(const boost::system::error_code & error)
 {
+    if (error) {
+        // TODO: log
+        m_state = DISCONNECTED;
+        return;
+    }
     LOG_DEBUG << "read done\n";
 
     m_readNeeded = 0;
@@ -40,6 +45,8 @@ void Client::handleRead(const boost::system::error_code & error)
 
     mcCommandType command;
     if (!get(command)) return read();
+
+    LOG_DEBUG << "got command: " << unsigned(command) << "\n";
 
     m_readNeeded = 1;
     m_data.clear();
@@ -62,6 +69,11 @@ bool getHelper(T & x, Client::DataList & m_data, unsigned int & m_dataItem, boos
     }
     m_dataItem++;
     return true;
+}
+
+bool Client::get(mcCommandType & c)
+{
+    return getHelper(c, m_data, m_dataItem, m_incoming, m_readNeeded);
 }
 
 bool Client::get(mcByte & b)
