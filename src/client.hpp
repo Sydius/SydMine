@@ -3,6 +3,7 @@
 #include <memory>
 #include <boost/asio.hpp>
 #include "eid.hpp"
+#include "types.hpp"
 
 class Client
 {
@@ -37,7 +38,12 @@ class Client
         Client(boost::asio::io_service & ioService);
 
         bool isReadDone(const boost::system::error_code & error, std::size_t bytes_transferred);
-        void handleRead(const boost::system::error_code & error, std::size_t bytes_transferred);
+        void handleRead(const boost::system::error_code & error);
+
+        bool getStart(void);
+        bool getCommandType(mcCommandType & c);
+        bool getEnd(void);
+        void getContinue(void);
 
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;

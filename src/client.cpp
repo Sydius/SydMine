@@ -14,7 +14,7 @@ void Client::read(void)
 
     boost::asio::async_read(m_socket, m_incoming,
             std::bind(&Client::isReadDone, this, std::placeholders::_1, std::placeholders::_2),
-            std::bind(&Client::handleRead, this, std::placeholders::_1, std::placeholders::_2));
+            std::bind(&Client::handleRead, this, std::placeholders::_1));
 }
 
 Client::Client(boost::asio::io_service & ioService)
@@ -32,7 +32,22 @@ bool Client::isReadDone(const boost::system::error_code & error, std::size_t byt
     return true;
 }
 
-void Client::handleRead(const boost::system::error_code & error, std::size_t bytes_transferred)
+void Client::handleRead(const boost::system::error_code & error)
 {
     LOG_DEBUG << "read done\n";
+
+    mcCommandType command;
+
+    if (!getCommandType(command)) return getContinue();
+    if (!getEnd()) return getContinue();
+}
+
+bool Client::getCommandType(mcCommandType & c)
+{
+    return true;
+}
+
+bool Client::getEnd(void)
+{
+    return true;
 }

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cstdint>
+#include "types.hpp"
 
-typedef uint64_t EID;
+typedef mcLong EID;
 
 EID generateNewEID(void);
