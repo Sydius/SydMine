@@ -46,6 +46,8 @@ class Client
 
         void writeIfNeeded(void);
 
+        void sendKick(const std::string & reason);
+
         ~Client();
 
     private:

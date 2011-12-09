@@ -47,6 +47,12 @@ void Client::writeIfNeeded(void)
             std::bind(&Client::handleWrite, this, std::placeholders::_1));
 }
 
+void Client::sendKick(const std::string & reason)
+{
+    set(mcCommandType(0xFF));
+    setString(reason);
+}
+
 void Client::handleWrite(const boost::system::error_code & error)
 {
     if (error) {
@@ -75,9 +81,10 @@ void Client::handleRead(const boost::system::error_code & error)
     LOG_DEBUG << "got command: " << unsigned(command) << "\n";
     switch (command) {
         case 0xFE: // Server list ping
+            sendKick(u8"SydMine test server\xc2\xa7""0\xc2\xa7""42");
             break;
         default:
-            // TODO: send kick
+            sendKick(u8"lol, u mad?");
             break;
     }
 
@@ -190,11 +197,10 @@ void Client::set(mcCommandType c)
 
 void Client::setString(const std::string & str)
 {
-    set(mcShort(str.length()));
-
     std::u16string utf16;
     
     utf8::utf8to16(str.begin(), str.end(), std::back_inserter(utf16));
+    set(mcShort(utf16.length()));
 
     for (mcShort c: utf16) {
         set(c);
