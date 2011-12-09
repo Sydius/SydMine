@@ -31,7 +31,17 @@ class Client
             m_eid = eid;
         }
 
+        EID getEID(void) const
+        {
+            return m_eid;
+        }
+
         void read(void);
+
+        State getState(void) const
+        {
+            return m_state;
+        }
 
         ~Client();
 

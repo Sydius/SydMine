@@ -10,8 +10,20 @@ Server::Server(boost::asio::io_service & ioService, int port)
     accept();
 }
 
+void Server::checkClientStatus(void)
+{
+    // Check for disconnected clients
+    for (auto & client: m_clients) {
+        if (client.second->getState() == Client::DISCONNECTED) {
+            LOG_NOTICE << "client disconnected (EID " << client.second->getEID() << "): " << client.second->socket().remote_endpoint() << "\n";
+            m_clients.erase(client.first);
+        }
+    }
+}
+
 bool Server::tick(void)
 {
+    checkClientStatus();
     return true;
 }
 

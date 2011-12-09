@@ -34,7 +34,6 @@ Client::Client(boost::asio::io_service & ioService)
 void Client::handleRead(const boost::system::error_code & error)
 {
     if (error) {
-        // TODO: log
         m_state = DISCONNECTED;
         return;
     }
