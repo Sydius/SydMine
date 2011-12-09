@@ -119,13 +119,43 @@ bool Client::get(mcCommandType & c)
 
 // Template helper
 template<class T>
-void setHelper(T & x, boost::asio::streambuf & m_outgoing)
+void setHelper(T x, boost::asio::streambuf & m_outgoing)
 {
     std::ostream outputStream(&m_outgoing);
     outputStream.write(reinterpret_cast<char *>(&x), sizeof(T));
 }
 
-void Client::set(mcCommandType & c)
+void Client::set(mcByte b)
+{
+    setHelper(b, m_outgoing);
+}
+
+void Client::set(mcShort s)
+{
+    setHelper(htons(s), m_outgoing);
+}
+
+void Client::set(mcInt i)
+{
+    setHelper(htonl(i), m_outgoing);
+}
+
+void Client::set(mcLong l)
+{
+    setHelper(htonll(l), m_outgoing);
+}
+
+void Client::set(mcFloat f)
+{
+    setHelper(htonl(f), m_outgoing);
+}
+
+void Client::set(mcDouble d)
+{
+    setHelper(htonll(d), m_outgoing);
+}
+
+void Client::set(mcCommandType c)
 {
     setHelper(c, m_outgoing);
 }

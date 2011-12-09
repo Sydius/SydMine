@@ -60,7 +60,13 @@ class Client
         bool get(mcDouble & d);
         bool get(mcCommandType & c);
 
-        void set(mcCommandType & c);
+        void set(mcByte b);
+        void set(mcShort s);
+        void set(mcInt i);
+        void set(mcLong l);
+        void set(mcFloat f);
+        void set(mcDouble d);
+        void set(mcCommandType c);
 
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;
