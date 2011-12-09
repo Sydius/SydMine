@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 #include <boost/asio.hpp>
 #include "eid.hpp"
 #include "types.hpp"
@@ -40,14 +41,16 @@ class Client
         bool isReadDone(const boost::system::error_code & error, std::size_t bytes_transferred);
         void handleRead(const boost::system::error_code & error);
 
-        bool getStart(void);
-        bool getCommandType(mcCommandType & c);
-        bool getEnd(void);
-        void getContinue(void);
+        bool get(mcByte & b);
 
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;
         State m_state;
         boost::asio::streambuf m_incoming;
         boost::asio::streambuf m_outgoing;
+        std::size_t m_readNeeded;
+
+        typedef std::vector<mcLargest> DataList;
+        DataList m_data;
+        unsigned int m_dataItem;
 };
