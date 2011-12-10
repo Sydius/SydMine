@@ -157,8 +157,6 @@ void Client::handleLogin(void)
     set(mcByte(3)); // difficulty TODO: add server config
     set(mcUByte(128)); // world height
     set(mcUByte(m_server->getPlayingCount()));
-
-    LOG_DEBUG << "size: " << m_outgoing.size() << "\n";
 }
 
 void Client::handleHandshake(void)
