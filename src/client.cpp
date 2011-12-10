@@ -126,6 +126,7 @@ void Client::handleHandshake(void)
 
     set(mcCommandType(0x02));
     if (m_server->authRequired()) {
+        // TODO: support authentication
     } else {
         set(u8"-");
     }
