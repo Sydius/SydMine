@@ -102,13 +102,16 @@ void Client::handleRead(const boost::system::error_code & error)
     if (!get(command)) return read();
 
     LOG_DEBUG << "got command: " << unsigned(command) << "\n";
-    switch (command) {
-        case 0xFE: // Server list ping
-            sendPingResponse();
-            break;
-        default:
-            disconnect(u8"Packet stream corrupt");
-            break;
+
+    if (m_state == CONNECTED) {
+        switch (command) {
+            case 0xFE: // Server list ping
+                sendPingResponse();
+                break;
+            default:
+                disconnect(u8"Packet stream corrupt");
+                break;
+        }
     }
 
     m_readNeeded = sizeof(mcCommandType);
