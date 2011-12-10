@@ -70,6 +70,7 @@ class Client
         void handleHandshake(void);
         void handlePing(void);
 
+        void handlePlayerPositionUpdate(void);
         void handlePlayerPosition(void);
 
         bool get(mcByte & b);

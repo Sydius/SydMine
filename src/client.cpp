@@ -112,6 +112,9 @@ void Client::handleRead(const boost::system::error_code & error)
         }
     } else if (m_state == PLAYING) {
         switch(command) {
+            case 0x0B: // Player position update
+                handlePlayerPositionUpdate();
+                break;
             case 0x0D: // Player position
                 handlePlayerPosition();
                 break;
@@ -212,6 +215,24 @@ void Client::handlePlayerPosition(void)
     if (!get(onGround)) return read();
 
     // TODO: do something here
+}
+
+void Client::handlePlayerPositionUpdate(void)
+{
+    mcDouble x;
+    if (!get(x)) return read();
+    mcDouble y;
+    if (!get(y)) return read();
+    mcDouble stance;
+    if (!get(stance)) return read();
+    mcDouble z;
+    if (!get(z)) return read();
+    mcByte onGround;
+    if (!get(onGround)) return read();
+
+    // TODO: do something here
+
+    LOG_DEBUG << x << " " << y << " " << z << "\n";
 }
 
 // Template helper
