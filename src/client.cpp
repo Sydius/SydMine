@@ -112,6 +112,9 @@ void Client::handleRead(const boost::system::error_code & error)
         }
     } else if (m_state == PLAYING) {
         switch(command) {
+            case 0x00: // Keep-alive
+                handleKeepAlive();
+                break;
             case 0x0B: // Player position update
                 handlePlayerPositionUpdate();
                 break;
@@ -197,24 +200,12 @@ void Client::handlePing(void)
     disconnect(reason);
 }
 
-void Client::handlePlayerPosition(void)
+void Client::handleKeepAlive(void)
 {
-    mcDouble x;
-    if (!get(x)) return read();
-    mcDouble y;
-    if (!get(y)) return read();
-    mcDouble stance;
-    if (!get(stance)) return read();
-    mcDouble z;
-    if (!get(z)) return read();
-    mcFloat yaw;
-    if (!get(yaw)) return read();
-    mcFloat pitch;
-    if (!get(pitch)) return read();
-    mcByte onGround;
-    if (!get(onGround)) return read();
-
-    // TODO: do something here
+    mcInt id;
+    if (!get(id)) return read();
+    set(mcCommandType(0x00));
+    set(id);
 }
 
 void Client::handlePlayerPositionUpdate(void)
@@ -233,6 +224,26 @@ void Client::handlePlayerPositionUpdate(void)
     // TODO: do something here
 
     LOG_DEBUG << x << " " << y << " " << z << "\n";
+}
+
+void Client::handlePlayerPosition(void)
+{
+    mcDouble x;
+    if (!get(x)) return read();
+    mcDouble y;
+    if (!get(y)) return read();
+    mcDouble stance;
+    if (!get(stance)) return read();
+    mcDouble z;
+    if (!get(z)) return read();
+    mcFloat yaw;
+    if (!get(yaw)) return read();
+    mcFloat pitch;
+    if (!get(pitch)) return read();
+    mcByte onGround;
+    if (!get(onGround)) return read();
+
+    // TODO: do something here
 }
 
 // Template helper
