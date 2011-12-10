@@ -93,7 +93,7 @@ void Client::handleRead(const boost::system::error_code & error)
     mcCommandType command;
     if (!get(command)) return read();
 
-    LOG_DEBUG << "got command: " << unsigned(command) << "\n";
+    LOG_DEBUG << "got command: " << std::hex << unsigned(command) << "\n";
 
     if (m_state == CONNECTED) {
         switch (command) {
@@ -114,13 +114,15 @@ void Client::handleRead(const boost::system::error_code & error)
 
     m_readNeeded = sizeof(mcCommandType);
     m_data.clear();
+
+    writeIfNeeded();
+    if (m_state == DISCONNECTING) return;
+
     if (m_incoming.size()) {
         handleRead(error);
     } else {
         read();
     }
-
-    writeIfNeeded();
 }
 
 void Client::handleLogin(void)
