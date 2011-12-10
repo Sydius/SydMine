@@ -54,6 +54,12 @@ void Client::sendKick(const std::string & reason)
     set(reason);
 }
 
+void Client::disconnect(const std::string & reason)
+{
+    sendKick(reason);
+    m_state = DISCONNECTING;
+}
+
 void Client::handleWrite(const boost::system::error_code & error)
 {
     if (error) {
@@ -62,7 +68,13 @@ void Client::handleWrite(const boost::system::error_code & error)
     }
 
     m_writing = false;
-    writeIfNeeded();
+
+    if (m_state == DISCONNECTING) {
+        m_state = DISCONNECTED;
+        m_socket.cancel();
+    } else {
+        writeIfNeeded();
+    }
 }
 
 void Client::handleRead(const boost::system::error_code & error)
@@ -82,10 +94,10 @@ void Client::handleRead(const boost::system::error_code & error)
     LOG_DEBUG << "got command: " << unsigned(command) << "\n";
     switch (command) {
         case 0xFE: // Server list ping
-            sendKick(u8"SydMine test server\xc2\xa7""0\xc2\xa7""42");
+            disconnect(u8"SydMine test server\xc2\xa7""0\xc2\xa7""42");
             break;
         default:
-            sendKick(u8"lol, u mad?");
+            disconnect(u8"Packet stream corrupt");
             break;
     }
 

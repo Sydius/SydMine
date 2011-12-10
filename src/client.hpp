@@ -17,6 +17,7 @@ class Client
             LISTENING,
             CONNECTED,
             PLAYING,
+            DISCONNECTING,
             DISCONNECTED
         } State;
 
@@ -50,6 +51,8 @@ class Client
         void writeIfNeeded(void);
 
         void sendKick(const std::string & reason);
+
+        void disconnect(const std::string & reason);
 
         ~Client();
 
