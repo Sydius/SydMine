@@ -14,6 +14,10 @@ class Server
 
         bool tick(void);
 
+        int getPlayingCount(void) const;
+        int getPlayingMax(void) const;
+        std::string getDescription(void) const;
+
     private:
         void accept(void);
         void handleAccept(Client::pointer newClient,

@@ -4,7 +4,9 @@
 #include <ostream>
 #include <utf8.h>
 #include <locale>
+#include <boost/lexical_cast.hpp>
 #include "logging.hpp"
+#include "server.hpp"
 
 Client::~Client()
 {
@@ -54,6 +56,15 @@ void Client::sendKick(const std::string & reason)
     set(reason);
 }
 
+void Client::sendPingResponse(void)
+{
+    static const std::string delim(u8"\xc2\xa7");
+    std::string reason = m_server->getDescription() + delim;
+    reason += boost::lexical_cast<std::string>(m_server->getPlayingCount()) + delim;
+    reason += boost::lexical_cast<std::string>(m_server->getPlayingMax());
+    disconnect(reason);
+}
+
 void Client::disconnect(const std::string & reason)
 {
     sendKick(reason);
@@ -93,7 +104,7 @@ void Client::handleRead(const boost::system::error_code & error)
     LOG_DEBUG << "got command: " << unsigned(command) << "\n";
     switch (command) {
         case 0xFE: // Server list ping
-            disconnect(u8"SydMine test server\xc2\xa7""0\xc2\xa7""42");
+            sendPingResponse();
             break;
         default:
             disconnect(u8"Packet stream corrupt");

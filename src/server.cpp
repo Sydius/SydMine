@@ -27,6 +27,27 @@ bool Server::tick(void)
     return true;
 }
 
+int Server::getPlayingCount(void) const
+{
+    int playing = 0;
+    for (auto & client: m_clients) {
+        if (client.second->getState() == Client::PLAYING) {
+            playing++;
+        }
+    }
+    return playing;
+}
+
+int Server::getPlayingMax(void) const
+{
+    return 42;
+}
+
+std::string Server::getDescription(void) const
+{
+    return u8"SydMine test server";
+}
+
 void Server::accept(void)
 {
     Client::pointer newClient = Client::create(m_acceptor.io_service(), this);

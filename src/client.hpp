@@ -52,6 +52,8 @@ class Client
 
         void sendKick(const std::string & reason);
 
+        void sendPingResponse(void);
+
         void disconnect(const std::string & reason);
 
         ~Client();
