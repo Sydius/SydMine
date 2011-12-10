@@ -160,27 +160,37 @@ bool Client::get(mcByte & b)
 
 bool Client::get(mcShort & s)
 {
-    return ntohs(getHelper(s, m_data, m_dataItem, m_incoming, m_readNeeded));
+    bool ret = getHelper(s, m_data, m_dataItem, m_incoming, m_readNeeded);
+    s = ntohs(s);
+    return ret;
 }
 
 bool Client::get(mcInt & i)
 {
-    return ntohl(getHelper(i, m_data, m_dataItem, m_incoming, m_readNeeded));
+    bool ret = getHelper(i, m_data, m_dataItem, m_incoming, m_readNeeded);
+    i = ntohl(i);
+    return ret;
 }
 
 bool Client::get(mcLong & l)
 {
-    return ntohll(getHelper(l, m_data, m_dataItem, m_incoming, m_readNeeded));
+    bool ret = getHelper(l, m_data, m_dataItem, m_incoming, m_readNeeded);
+    l = ntohll(l);
+    return ret;
 }
 
 bool Client::get(mcFloat & f)
 {
-    return ntohl(getHelper(f, m_data, m_dataItem, m_incoming, m_readNeeded));
+    bool ret = getHelper(f, m_data, m_dataItem, m_incoming, m_readNeeded);
+    f = ntohl(f);
+    return ret;
 }
 
 bool Client::get(mcDouble & d)
 {
-    return ntohll(getHelper(d, m_data, m_dataItem, m_incoming, m_readNeeded));
+    bool ret = getHelper(d, m_data, m_dataItem, m_incoming, m_readNeeded);
+    d = ntohll(d);
+    return ret;
 }
 
 bool Client::get(mcCommandType & c)
