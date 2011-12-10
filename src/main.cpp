@@ -67,10 +67,9 @@ int main(int argc, char * argv[])
         boost::asio::io_service ioService;
         Server server(ioService, port);
 
-        auto time = std::chrono::monotonic_clock::now();
         while (keepGoing) {
             static const auto duration = std::chrono::milliseconds(TICK_DURATION);
-            auto nextFrame = time + duration;
+            auto nextFrame = std::chrono::monotonic_clock::now() + duration;
 
             ioService.poll();
             keepGoing = server.tick();
