@@ -27,7 +27,7 @@ Client::Client(boost::asio::io_service & ioService, Server * server)
     , m_state(LISTENING)
     , m_incoming()
     , m_outgoing()
-    , m_readNeeded(1)
+    , m_readNeeded(sizeof(mcCommandType))
     , m_data()
     , m_dataItem(0)
     , m_writing(false)
@@ -100,7 +100,7 @@ void Client::handleRead(const boost::system::error_code & error)
             break;
     }
 
-    m_readNeeded = 1;
+    m_readNeeded = sizeof(mcCommandType);
     m_data.clear();
     if (m_incoming.size()) {
         handleRead(error);
