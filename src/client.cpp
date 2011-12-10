@@ -56,15 +56,6 @@ void Client::sendKick(const std::string & reason)
     set(reason);
 }
 
-void Client::sendPingResponse(void)
-{
-    static const std::string delim(u8"\xc2\xa7");
-    std::string reason = m_server->getDescription() + delim;
-    reason += boost::lexical_cast<std::string>(m_server->getPlayingCount()) + delim;
-    reason += boost::lexical_cast<std::string>(m_server->getPlayingMax());
-    disconnect(reason);
-}
-
 void Client::disconnect(const std::string & reason)
 {
     sendKick(reason);
@@ -109,7 +100,7 @@ void Client::handleRead(const boost::system::error_code & error)
                 handleHandshake();
                 break;
             case 0xFE: // Server list ping
-                sendPingResponse();
+                handlePing();
                 break;
             default:
                 disconnect(u8"Packet stream corrupt");
@@ -133,6 +124,15 @@ void Client::handleHandshake(void)
     std::string username;
     if (!get(username)) return read();
     LOG_DEBUG << username << "\n";
+}
+
+void Client::handlePing(void)
+{
+    static const std::string delim(u8"\xc2\xa7");
+    std::string reason = m_server->getDescription() + delim;
+    reason += boost::lexical_cast<std::string>(m_server->getPlayingCount()) + delim;
+    reason += boost::lexical_cast<std::string>(m_server->getPlayingMax());
+    disconnect(reason);
 }
 
 // Template helper

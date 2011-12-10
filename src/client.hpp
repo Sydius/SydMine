@@ -52,8 +52,6 @@ class Client
 
         void sendKick(const std::string & reason);
 
-        void sendPingResponse(void);
-
         void disconnect(const std::string & reason);
 
         ~Client();
@@ -69,6 +67,7 @@ class Client
         void handleRead(const boost::system::error_code & error);
 
         void handleHandshake(void);
+        void handlePing(void);
 
         bool get(mcByte & b);
         bool get(mcShort & s);
