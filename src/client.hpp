@@ -78,7 +78,7 @@ class Client
         void set(mcFloat f);
         void set(mcDouble d);
         void set(mcCommandType c);
-        void setString(const std::string & str);
+        void set(const std::string & str);
 
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;

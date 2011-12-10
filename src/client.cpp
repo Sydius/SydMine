@@ -51,7 +51,7 @@ void Client::writeIfNeeded(void)
 void Client::sendKick(const std::string & reason)
 {
     set(mcCommandType(0xFF));
-    setString(reason);
+    set(reason);
 }
 
 void Client::handleWrite(const boost::system::error_code & error)
@@ -196,7 +196,7 @@ void Client::set(mcCommandType c)
     setHelper(c, m_outgoing);
 }
 
-void Client::setString(const std::string & str)
+void Client::set(const std::string & str)
 {
     std::u16string utf16;
     
