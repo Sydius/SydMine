@@ -83,7 +83,6 @@ void Client::handleRead(const boost::system::error_code & error)
         m_state = DISCONNECTED;
         return;
     }
-    LOG_DEBUG << "read done\n";
 
     m_readNeeded = 0;
     m_dataItem = 0;
