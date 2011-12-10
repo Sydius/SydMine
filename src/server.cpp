@@ -1,12 +1,19 @@
+#include <boost/program_options.hpp>
+#include <boost/program_options/parsers.hpp>
+#include <fstream>
 #include "server.hpp"
 #include "logging.hpp"
 
-Server::Server(boost::asio::io_service & ioService, int port)
+Server::Server(boost::asio::io_service & ioService, int port, const std::string & configFile)
     : m_acceptor(ioService, boost::asio::ip::tcp::endpoint(
                 boost::asio::ip::tcp::v4(), port))
     , m_clients()
+    , m_configFile(configFile)
+    , m_maxPlayers(0)
+    , m_desc()
 {
     LOG_NOTICE << "accepting connections at " << m_acceptor.local_endpoint() << "\n";
+    reloadConfig();
     accept();
 }
 
@@ -40,12 +47,27 @@ int Server::getPlayingCount(void) const
 
 int Server::getPlayingMax(void) const
 {
-    return 42;
+    return m_maxPlayers;
 }
 
 std::string Server::getDescription(void) const
 {
-    return u8"SydMine test server";
+    return m_desc;
+}
+
+void Server::reloadConfig(void)
+{
+    namespace po = boost::program_options;
+    po::options_description desc("Config Options");
+    desc.add_options()
+        ("desc", po::value<std::string>(&m_desc)->default_value("SydMine"), "server description")
+        ("maxPlayers", po::value<int>(&m_maxPlayers)->default_value(20), "maximum number of players")
+    ;
+
+    po::variables_map vm;
+    std::ifstream in(m_configFile); // bizarre, but the config file parser won't take a string
+    po::store(po::parse_config_file(in, desc), vm);
+    po::notify(vm);
 }
 
 void Server::accept(void)

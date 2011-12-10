@@ -37,10 +37,12 @@ bool daemonize(void)
 int main(int argc, char * argv[])
 {
     int port = 0;
+    std::string config;
     namespace po = boost::program_options;
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help", "produce help message")
+        ("config", po::value<std::string>(&config)->default_value("sydmine.cfg"), "config file location")
         ("port", po::value<int>(&port)->default_value(25565), "port to listen on")
 #ifdef __linux
         ("daemonize", "daemonize process")
@@ -65,7 +67,7 @@ int main(int argc, char * argv[])
 
     try {
         boost::asio::io_service ioService;
-        Server server(ioService, port);
+        Server server(ioService, port, config);
 
         while (keepGoing) {
             static const auto duration = std::chrono::milliseconds(TICK_DURATION);

@@ -10,13 +10,15 @@ class Server
     public:
         typedef std::unordered_map<EID, Client::pointer> ClientList;
 
-        Server(boost::asio::io_service & ioService, int port);
+        Server(boost::asio::io_service & ioService, int port, const std::string & configFile);
 
         bool tick(void);
 
         int getPlayingCount(void) const;
         int getPlayingMax(void) const;
         std::string getDescription(void) const;
+
+        void reloadConfig(void);
 
     private:
         void accept(void);
@@ -26,4 +28,9 @@ class Server
 
         boost::asio::ip::tcp::acceptor m_acceptor;
         ClientList m_clients;
+        std::string m_configFile;
+
+        // Config file options
+        int m_maxPlayers;
+        std::string m_desc;
 };
