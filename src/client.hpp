@@ -16,6 +16,7 @@ class Client
         typedef enum {
             LISTENING,
             CONNECTED,
+            PLAYING,
             DISCONNECTED
         } State;
 
