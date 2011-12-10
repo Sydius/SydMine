@@ -21,7 +21,7 @@ void Client::read(void)
             std::bind(&Client::handleRead, this, std::placeholders::_1));
 }
 
-Client::Client(boost::asio::io_service & ioService)
+Client::Client(boost::asio::io_service & ioService, Server * server)
     : m_socket(ioService)
     , m_eid(0)
     , m_state(LISTENING)
@@ -31,6 +31,7 @@ Client::Client(boost::asio::io_service & ioService)
     , m_data()
     , m_dataItem(0)
     , m_writing(false)
+    , m_server(server)
 {
     LOG_DEBUG << "client created\n";
 }

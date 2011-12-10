@@ -7,6 +7,8 @@
 #include "types.hpp"
 #include "netutil.hpp"
 
+class Server;
+
 class Client
 {
     public:
@@ -17,9 +19,9 @@ class Client
             DISCONNECTED
         } State;
 
-        static pointer create(boost::asio::io_service & ioService)
+        static pointer create(boost::asio::io_service & ioService, Server * server)
         {
-            return pointer(new Client(ioService));
+            return pointer(new Client(ioService, server));
         }
 
         boost::asio::ip::tcp::socket & socket(void)
@@ -50,8 +52,12 @@ class Client
 
         ~Client();
 
+        Client & operator=(const Client &) = delete;
+        Client(const Client &) = delete;
+        Client() = default;
+
     private:
-        Client(boost::asio::io_service & ioService);
+        Client(boost::asio::io_service & ioService, Server * server);
 
         void handleWrite(const boost::system::error_code & error);
         void handleRead(const boost::system::error_code & error);
@@ -85,4 +91,5 @@ class Client
         unsigned int m_dataItem;
 
         bool m_writing;
+        Server * m_server;
 };

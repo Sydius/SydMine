@@ -29,7 +29,7 @@ bool Server::tick(void)
 
 void Server::accept(void)
 {
-    Client::pointer newClient = Client::create(m_acceptor.io_service());
+    Client::pointer newClient = Client::create(m_acceptor.io_service(), this);
 
     m_acceptor.async_accept(newClient->socket(),
             std::bind(&Server::handleAccept, this, newClient, std::placeholders::_1));
