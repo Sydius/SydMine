@@ -105,6 +105,9 @@ void Client::handleRead(const boost::system::error_code & error)
 
     if (m_state == CONNECTED) {
         switch (command) {
+            case 0x02: // Handshake
+                handleHandshake();
+                break;
             case 0xFE: // Server list ping
                 sendPingResponse();
                 break;
@@ -123,6 +126,13 @@ void Client::handleRead(const boost::system::error_code & error)
     }
 
     writeIfNeeded();
+}
+
+void Client::handleHandshake(void)
+{
+    std::string username;
+    if (!get(username)) return read();
+    LOG_DEBUG << username << "\n";
 }
 
 // Template helper
@@ -176,6 +186,22 @@ bool Client::get(mcDouble & d)
 bool Client::get(mcCommandType & c)
 {
     return getHelper(c, m_data, m_dataItem, m_incoming, m_readNeeded);
+}
+
+bool Client::get(std::string & str)
+{
+    mcShort len = 0;
+    if (!get(len)) return false;
+
+    std::u16string utf16;
+    for (mcShort i = 0; i < len; i++) {
+        mcShort c;
+        if (!get(c)) return false;
+        utf16 += c;
+    }
+
+    utf8::utf16to8(utf16.begin(), utf16.end(), std::back_inserter(str));
+    return true;
 }
 
 // Template helper

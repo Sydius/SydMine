@@ -68,6 +68,8 @@ class Client
         void handleWrite(const boost::system::error_code & error);
         void handleRead(const boost::system::error_code & error);
 
+        void handleHandshake(void);
+
         bool get(mcByte & b);
         bool get(mcShort & s);
         bool get(mcInt & i);
@@ -75,6 +77,7 @@ class Client
         bool get(mcFloat & f);
         bool get(mcDouble & d);
         bool get(mcCommandType & c);
+        bool get(std::string & str);
 
         void set(mcByte b);
         void set(mcShort s);
