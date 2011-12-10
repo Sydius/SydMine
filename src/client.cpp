@@ -110,6 +110,15 @@ void Client::handleRead(const boost::system::error_code & error)
                 disconnect(u8"Packet stream corrupt");
                 break;
         }
+    } else if (m_state == PLAYING) {
+        switch(command) {
+            case 0x0D: // Player position
+                handlePlayerPosition();
+                break;
+            default:
+                disconnect(u8"Packet stream corrupt");
+                break;
+        }
     }
 
     m_readNeeded = sizeof(mcCommandType);
@@ -159,6 +168,8 @@ void Client::handleLogin(void)
     set(mcByte(3)); // difficulty TODO: add server config
     set(mcUByte(128)); // world height
     set(mcUByte(m_server->getPlayingCount()));
+
+    m_state = PLAYING;
 }
 
 void Client::handleHandshake(void)
@@ -181,6 +192,26 @@ void Client::handlePing(void)
     reason += boost::lexical_cast<std::string>(m_server->getPlayingCount()) + delim;
     reason += boost::lexical_cast<std::string>(m_server->getPlayingMax());
     disconnect(reason);
+}
+
+void Client::handlePlayerPosition(void)
+{
+    mcDouble x;
+    if (!get(x)) return read();
+    mcDouble y;
+    if (!get(y)) return read();
+    mcDouble stance;
+    if (!get(stance)) return read();
+    mcDouble z;
+    if (!get(z)) return read();
+    mcFloat yaw;
+    if (!get(yaw)) return read();
+    mcFloat pitch;
+    if (!get(pitch)) return read();
+    mcByte onGround;
+    if (!get(onGround)) return read();
+
+    // TODO: do something here
 }
 
 // Template helper
