@@ -7,6 +7,7 @@
 #include <boost/lexical_cast.hpp>
 #include "logging.hpp"
 #include "server.hpp"
+#include "chunkmanager.hpp"
 
 Client::~Client()
 {
