@@ -2,6 +2,6 @@
 
 #include "types.hpp"
 
-typedef mcLong EID;
+typedef mcUInt EID;
 
 EID generateNewEID(void);

@@ -34,6 +34,7 @@ Client::Client(boost::asio::io_service & ioService, Server * server)
     , m_dataItem(0)
     , m_writing(false)
     , m_server(server)
+    , m_username("Unknown")
 {
     LOG_DEBUG << "client created\n";
 }
@@ -96,6 +97,9 @@ void Client::handleRead(const boost::system::error_code & error)
 
     if (m_state == CONNECTED) {
         switch (command) {
+            case 0x01: // Login request
+                handleLogin();
+                break;
             case 0x02: // Handshake
                 handleHandshake();
                 break;
@@ -117,6 +121,44 @@ void Client::handleRead(const boost::system::error_code & error)
     }
 
     writeIfNeeded();
+}
+
+void Client::handleLogin(void)
+{
+    mcInt protocolVersion;
+    if (!get(protocolVersion)) return read();
+
+    if (protocolVersion != 22) return disconnect(u8"Unsupported protocol version");
+
+    if (!get(m_username)) return read();
+    mcLong unusedL;
+    if (!get(unusedL)) return read();
+    mcInt unusedI;
+    if (!get(unusedI)) return read();
+    mcByte unusedB;
+    if (!get(unusedB)) return read();
+    if (!get(unusedB)) return read();
+    if (!get(unusedB)) return read();
+    if (!get(unusedB)) return read();
+
+    // TODO: support authentication
+    
+    // TODO: add validation
+    
+    if (m_server->getPlayingCount() >= m_server->getPlayingMax())
+        return disconnect(u8"Server full");
+
+    set(mcCommandType(0x01));
+    set(m_eid);
+    set(u8""); // Unused string
+    set(mcLong(1)); // TODO: fill with map seed
+    set(mcInt(0)); // survival mode
+    set(mcByte(0)); // overworld
+    set(mcByte(3)); // difficulty TODO: add server config
+    set(mcUByte(128)); // world height
+    set(mcUByte(m_server->getPlayingCount()));
+
+    LOG_DEBUG << "size: " << m_outgoing.size() << "\n";
 }
 
 void Client::handleHandshake(void)
@@ -164,7 +206,19 @@ bool Client::get(mcByte & b)
     return getHelper(b, m_data, m_dataItem, m_incoming, m_readNeeded);
 }
 
+bool Client::get(mcUByte & b)
+{
+    return getHelper(b, m_data, m_dataItem, m_incoming, m_readNeeded);
+}
+
 bool Client::get(mcShort & s)
+{
+    bool ret = getHelper(s, m_data, m_dataItem, m_incoming, m_readNeeded);
+    s = ntohs(s);
+    return ret;
+}
+
+bool Client::get(mcUShort & s)
 {
     bool ret = getHelper(s, m_data, m_dataItem, m_incoming, m_readNeeded);
     s = ntohs(s);
@@ -178,7 +232,21 @@ bool Client::get(mcInt & i)
     return ret;
 }
 
+bool Client::get(mcUInt & i)
+{
+    bool ret = getHelper(i, m_data, m_dataItem, m_incoming, m_readNeeded);
+    i = ntohl(i);
+    return ret;
+}
+
 bool Client::get(mcLong & l)
+{
+    bool ret = getHelper(l, m_data, m_dataItem, m_incoming, m_readNeeded);
+    l = ntohll(l);
+    return ret;
+}
+
+bool Client::get(mcULong & l)
 {
     bool ret = getHelper(l, m_data, m_dataItem, m_incoming, m_readNeeded);
     l = ntohll(l);
@@ -197,11 +265,6 @@ bool Client::get(mcDouble & d)
     bool ret = getHelper(d, m_data, m_dataItem, m_incoming, m_readNeeded);
     d = ntohll(d);
     return ret;
-}
-
-bool Client::get(mcCommandType & c)
-{
-    return getHelper(c, m_data, m_dataItem, m_incoming, m_readNeeded);
 }
 
 bool Client::get(std::string & str)
@@ -233,7 +296,17 @@ void Client::set(mcByte b)
     setHelper(b, m_outgoing);
 }
 
+void Client::set(mcUByte b)
+{
+    setHelper(b, m_outgoing);
+}
+
 void Client::set(mcShort s)
+{
+    setHelper(htons(s), m_outgoing);
+}
+
+void Client::set(mcUShort s)
 {
     setHelper(htons(s), m_outgoing);
 }
@@ -243,7 +316,17 @@ void Client::set(mcInt i)
     setHelper(htonl(i), m_outgoing);
 }
 
+void Client::set(mcUInt i)
+{
+    setHelper(htonl(i), m_outgoing);
+}
+
 void Client::set(mcLong l)
+{
+    setHelper(htonll(l), m_outgoing);
+}
+
+void Client::set(mcULong l)
 {
     setHelper(htonll(l), m_outgoing);
 }
@@ -256,11 +339,6 @@ void Client::set(mcFloat f)
 void Client::set(mcDouble d)
 {
     setHelper(htonll(d), m_outgoing);
-}
-
-void Client::set(mcCommandType c)
-{
-    setHelper(c, m_outgoing);
 }
 
 void Client::set(const std::string & str)

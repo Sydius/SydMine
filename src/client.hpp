@@ -66,25 +66,32 @@ class Client
         void handleWrite(const boost::system::error_code & error);
         void handleRead(const boost::system::error_code & error);
 
+        void handleLogin(void);
         void handleHandshake(void);
         void handlePing(void);
 
         bool get(mcByte & b);
+        bool get(mcUByte & b);
         bool get(mcShort & s);
+        bool get(mcUShort & s);
         bool get(mcInt & i);
+        bool get(mcUInt & i);
         bool get(mcLong & l);
+        bool get(mcULong & l);
         bool get(mcFloat & f);
         bool get(mcDouble & d);
-        bool get(mcCommandType & c);
         bool get(std::string & str);
 
         void set(mcByte b);
+        void set(mcUByte b);
         void set(mcShort s);
+        void set(mcUShort s);
         void set(mcInt i);
+        void set(mcUInt i);
         void set(mcLong l);
+        void set(mcULong l);
         void set(mcFloat f);
         void set(mcDouble d);
-        void set(mcCommandType c);
         void set(const std::string & str);
 
         boost::asio::ip::tcp::socket m_socket;
@@ -100,4 +107,6 @@ class Client
 
         bool m_writing;
         Server * m_server;
+
+        std::string m_username;
 };
