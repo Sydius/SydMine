@@ -11,6 +11,7 @@ Server::Server(boost::asio::io_service & ioService, int port, const std::string 
     , m_configFile(configFile)
     , m_maxPlayers(0)
     , m_desc()
+    , m_requireAuth(true)
 {
     LOG_NOTICE << "accepting connections at " << m_acceptor.local_endpoint() << "\n";
     reloadConfig();
@@ -55,6 +56,11 @@ std::string Server::getDescription(void) const
     return m_desc;
 }
 
+bool Server::authRequired(void) const
+{
+    return m_requireAuth;
+}
+
 void Server::reloadConfig(void)
 {
     namespace po = boost::program_options;
@@ -62,6 +68,7 @@ void Server::reloadConfig(void)
     desc.add_options()
         ("desc", po::value<std::string>(&m_desc)->default_value("SydMine"), "server description")
         ("maxPlayers", po::value<int>(&m_maxPlayers)->default_value(20), "maximum number of players")
+        ("requireAuth", po::value<bool>(&m_requireAuth)->default_value(true), "whether or not auth is required")
     ;
 
     po::variables_map vm;

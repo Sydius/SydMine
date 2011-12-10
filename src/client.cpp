@@ -123,7 +123,12 @@ void Client::handleHandshake(void)
 {
     std::string username;
     if (!get(username)) return read();
-    LOG_DEBUG << username << "\n";
+
+    set(mcCommandType(0x02));
+    if (m_server->authRequired()) {
+    } else {
+        set(u8"-");
+    }
 }
 
 void Client::handlePing(void)

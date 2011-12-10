@@ -17,6 +17,7 @@ class Server
         int getPlayingCount(void) const;
         int getPlayingMax(void) const;
         std::string getDescription(void) const;
+        bool authRequired(void) const;
 
         void reloadConfig(void);
 
@@ -33,4 +34,5 @@ class Server
         // Config file options
         int m_maxPlayers;
         std::string m_desc;
+        bool m_requireAuth;
 };
