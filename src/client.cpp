@@ -107,6 +107,23 @@ void Client::sendChat(const std::string & msg)
     set(msg);
 }
 
+void Client::addPeer(Client * peer)
+{
+    set(mcCommandType(0x14));
+    set(peer->getEID());
+    set(peer->getName());
+    set(mcInt(peer->getX()));
+    set(mcInt(peer->getY()));
+    set(mcInt(peer->getZ()));
+    set(mcByte(0)); // TODO: fill in (rotation)
+    set(mcByte(0)); // TODO: fill in (pitch)
+    set(mcShort(0)); // TODO: fill in (holding)
+}
+
+void Client::removePeer(Client * peer)
+{
+}
+
 void Client::disconnect(const std::string & reason)
 {
     sendKick(reason);

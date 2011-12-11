@@ -97,6 +97,13 @@ void Server::notifyConnected(Client * client, bool connected)
     for (auto & peer: m_clients) {
         if (peer.second->getState() == Client::PLAYING) {
             peer.second->sendChat(chat);
+            if (peer.second->getEID() != client->getEID()) {
+                if (connected) {
+                    peer.second->addPeer(client);
+                } else {
+                    peer.second->removePeer(client);
+                }
+            }
         }
     }
 }

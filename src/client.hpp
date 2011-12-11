@@ -68,6 +68,9 @@ class Client: public Entity
         void sendTimeUpdate(unsigned int time);
         void sendChat(const std::string & msg);
 
+        void addPeer(Client * peer);
+        void removePeer(Client * peer);
+
         void disconnect(const std::string & reason);
 
         ~Client();
