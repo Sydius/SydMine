@@ -2,9 +2,13 @@
 
 #include <istream>
 #include <ostream>
+#include <sstream>
 #include <utf8.h>
 #include <locale>
 #include <boost/lexical_cast.hpp>
+#include <boost/iostreams/filtering_streambuf.hpp>
+#include <boost/iostreams/copy.hpp>
+#include <boost/iostreams/filter/zlib.hpp>
 #include "logging.hpp"
 #include "server.hpp"
 #include "chunkmanager.hpp"
@@ -68,6 +72,26 @@ void Client::sendInitChunk(int x, int z)
 
 void Client::sendChunk(int x, int z, const Chunk & chunk)
 {
+    set(mcCommandType(0x33));
+    set(mcInt(x*chunk.getXSize()));
+    set(mcShort(0)); // y
+    set(mcInt(z*chunk.getZSize()));
+    set(mcByte(chunk.getXSize()-1));
+    set(mcByte(chunk.getYSize()-1));
+    set(mcByte(chunk.getZSize()-1));
+
+    std::string uncompressed((const char *)chunk.getData(), chunk.getDataSize());
+
+    std::string compressed;
+    boost::iostreams::filtering_streambuf<boost::iostreams::output> out;
+    out.push(boost::iostreams::zlib_compressor());
+    out.push(std::back_inserter(compressed));
+    boost::iostreams::copy(boost::make_iterator_range(uncompressed), out);
+
+    set(mcInt(compressed.length()));
+
+    std::ostream outputStream(&m_outgoing);
+    outputStream.write(reinterpret_cast<const char *>(compressed.c_str()), compressed.length());
 }
 
 void Client::disconnect(const std::string & reason)
@@ -128,8 +152,14 @@ void Client::handleRead(const boost::system::error_code & error)
             case 0x00: // Keep-alive
                 handleKeepAlive();
                 break;
+            case 0x0A: // On-ground
+                handleOnGround();
+                break;
             case 0x0B: // Player position update
                 handlePlayerPositionUpdate();
+                break;
+            case 0x0C: // Player look
+                handlePlayerLook();
                 break;
             case 0x0D: // Player position
                 handlePlayerPosition();
@@ -190,6 +220,44 @@ void Client::handleLogin(void)
 
     m_state = PLAYING;
     m_server->chunkSubscribe(this, 0, 0); // TODO: use player coords
+    m_server->chunkSubscribe(this, -1, 0); // TODO: use player coords
+    m_server->chunkSubscribe(this, 0, -1); // TODO: use player coords
+    m_server->chunkSubscribe(this, -1, -1); // TODO: use player coords
+
+    set(mcCommandType(0x06));
+    set(mcInt(10));
+    set(mcInt(70));
+    set(mcInt(10));
+
+
+    /*
+    set(mcCommandType(0x09));
+    set(mcByte(0));
+    set(mcByte(3));
+    set(mcByte(0));
+    set(mcShort(128));
+    set(mcLong(1));*/
+
+    set(mcCommandType(0x0D));
+    set(mcDouble(75));
+    set(mcDouble(77));
+    set(mcDouble(75));
+    set(mcDouble(75));
+    set(mcFloat(0));
+    set(mcFloat(0));
+    set(mcByte(0));
+
+
+    set(mcCommandType(0x04));
+    set(mcLong(6000));
+
+    set(mcCommandType(0x22));
+    set(m_eid);
+    set(mcInt(0));
+    set(mcInt(70*32));
+    set(mcInt(0));
+    set(mcByte(0));
+    set(mcByte(0));
 }
 
 void Client::handleHandshake(void)
@@ -222,6 +290,14 @@ void Client::handleKeepAlive(void)
     set(id);
 }
 
+void Client::handleOnGround(void)
+{
+    mcByte onGround;
+    if (!get(onGround)) return read();
+
+    // TODO: do something
+}
+
 void Client::handlePlayerPositionUpdate(void)
 {
     mcDouble x;
@@ -238,6 +314,16 @@ void Client::handlePlayerPositionUpdate(void)
     // TODO: do something here
 
     LOG_DEBUG << x << " " << y << " " << z << "\n";
+}
+
+void Client::handlePlayerLook(void)
+{
+    mcFloat yaw;
+    if (!get(yaw)) return read();
+    mcFloat pitch;
+    if (!get(pitch)) return read();
+    mcByte onGround;
+    if (!get(onGround)) return read();
 }
 
 void Client::handlePlayerPosition(void)

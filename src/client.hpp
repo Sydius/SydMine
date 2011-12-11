@@ -74,7 +74,9 @@ class Client
         void handlePing(void);
 
         void handleKeepAlive(void);
+        void handleOnGround(void);
         void handlePlayerPositionUpdate(void);
+        void handlePlayerLook(void);
         void handlePlayerPosition(void);
 
         bool get(mcByte & b);

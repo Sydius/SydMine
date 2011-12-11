@@ -15,7 +15,7 @@ def build(bld):
     bld.program(
         source=sources,
         target='sydmine',
-        lib=['boost_system-mt', 'boost_program_options-mt'],
+        lib=['boost_system-mt', 'boost_program_options-mt', 'boost_iostreams-mt'],
         defines=['_GLIBCXX_USE_NANOSLEEP'],
         includes=['../third-party/utf8/source'],
         cxxflags='-O3 --std=c++0x --pedantic -Wall -Wfatal-errors -Weffc++')
