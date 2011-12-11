@@ -13,6 +13,8 @@
 #include "server.hpp"
 #include "chunkmanager.hpp"
 
+#define PLAYER_HEIGHT 1.62
+
 Client::~Client()
 {
 }
@@ -275,7 +277,7 @@ void Client::handleLogin(void)
 
     set(mcCommandType(0x0D));
     set(mcDouble(getX()));
-    set(mcDouble(77));
+    set(mcDouble(getY() + PLAYER_HEIGHT));
     set(mcDouble(getY()));
     set(mcDouble(getZ()));
     set(mcFloat(0));
