@@ -74,6 +74,18 @@ unsigned int Server::getTicks(void) const
     return m_curTick;
 }
 
+void Server::notifyChat(Client * client, const std::string & msg)
+{
+    // TODO: sanitize, add support for commands
+    std::string chat = std::string("<") + client->getName() + "> " + msg;
+
+    for (auto & peer: m_clients) {
+        if (peer.second->getState() == Client::PLAYING) {
+            peer.second->sendChat(chat);
+        }
+    }
+}
+
 void Server::reloadConfig(void)
 {
     namespace po = boost::program_options;

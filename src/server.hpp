@@ -21,6 +21,8 @@ class Server
         bool authRequired(void) const;
         unsigned int getTicks(void) const;
 
+        void notifyChat(Client * client, const std::string & msg);
+
         void reloadConfig(void);
 
         void chunkSubscribe(Client * client, int x, int z);

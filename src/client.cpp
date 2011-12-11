@@ -98,6 +98,12 @@ void Client::sendTimeUpdate(unsigned int time)
     set(mcLong(time));
 }
 
+void Client::sendChat(const std::string & msg)
+{
+    set(mcCommandType(0x03));
+    set(msg);
+}
+
 void Client::disconnect(const std::string & reason)
 {
     sendKick(reason);
@@ -154,6 +160,9 @@ void Client::handleRead(const boost::system::error_code & error)
         switch(command) {
             case 0x00: // Keep-alive
                 handleKeepAlive();
+                break;
+            case 0x03: // Chat
+                handleChat();
                 break;
             case 0x0A: // On-ground
                 handleOnGround();
@@ -293,6 +302,14 @@ void Client::handleKeepAlive(void)
     if (!get(id)) return read();
     set(mcCommandType(0x00));
     set(id);
+}
+
+void Client::handleChat(void)
+{
+    std::string msg;
+    if (!get(msg)) return read();
+
+    m_server->notifyChat(this, msg);
 }
 
 void Client::handleOnGround(void)

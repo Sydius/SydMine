@@ -43,6 +43,11 @@ class Client: public Entity
             return m_eid;
         }
 
+        std::string getName(void) const
+        {
+            return m_username;
+        }
+
         void read(void);
 
         State getState(void) const
@@ -56,6 +61,7 @@ class Client: public Entity
         void sendInitChunk(Chunk::Coord x, Chunk::Coord z, bool enable);
         void sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk);
         void sendTimeUpdate(unsigned int time);
+        void sendChat(const std::string & msg);
 
         void disconnect(const std::string & reason);
 
@@ -76,6 +82,7 @@ class Client: public Entity
         void handlePing(void);
 
         void handleKeepAlive(void);
+        void handleChat(void);
         void handleOnGround(void);
         void handlePlayerPositionUpdate(void);
         void handlePlayerLook(void);
