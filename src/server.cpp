@@ -10,6 +10,7 @@ Server::Server(boost::asio::io_service & ioService, int port, const std::string 
     , m_clients()
     , m_configFile(configFile)
     , m_chunkManager(".") // TODO: replace with real world dir
+    , m_curTick(0)
     , m_maxPlayers(0)
     , m_desc()
     , m_requireAuth(true)
@@ -26,6 +27,10 @@ void Server::checkClientStatus(void)
         if (client.second->getState() == Client::DISCONNECTED) {
             LOG_NOTICE << "client disconnected (EID " << client.second->getEID() << "): " << client.second->socket().remote_endpoint() << "\n";
             m_clients.erase(client.first);
+        } else if (client.second->getState() == Client::PLAYING) {
+            if (!(m_curTick % 20)) {
+                client.second->sendTimeUpdate(m_curTick);
+            }
         }
     }
 }
@@ -33,6 +38,8 @@ void Server::checkClientStatus(void)
 bool Server::tick(void)
 {
     checkClientStatus();
+
+    m_curTick++;
     return true;
 }
 
@@ -60,6 +67,11 @@ std::string Server::getDescription(void) const
 bool Server::authRequired(void) const
 {
     return m_requireAuth;
+}
+
+unsigned int Server::getTicks(void) const
+{
+    return m_curTick;
 }
 
 void Server::reloadConfig(void)

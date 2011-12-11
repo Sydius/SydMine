@@ -54,6 +54,7 @@ class Client
         void sendKick(const std::string & reason);
         void sendInitChunk(Chunk::Coord x, Chunk::Coord z, bool enable);
         void sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk);
+        void sendTimeUpdate(unsigned int time);
 
         void disconnect(const std::string & reason);
 

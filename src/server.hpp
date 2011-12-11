@@ -19,6 +19,7 @@ class Server
         int getPlayingMax(void) const;
         std::string getDescription(void) const;
         bool authRequired(void) const;
+        unsigned int getTicks(void) const;
 
         void reloadConfig(void);
 
@@ -35,6 +36,8 @@ class Server
         std::string m_configFile;
 
         ChunkManager m_chunkManager;
+
+        unsigned int m_curTick;
 
         // Config file options
         int m_maxPlayers;

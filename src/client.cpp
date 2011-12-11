@@ -92,6 +92,12 @@ void Client::sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk)
     outputStream.write(reinterpret_cast<const char *>(compressed.c_str()), compressed.length());
 }
 
+void Client::sendTimeUpdate(unsigned int time)
+{
+    set(mcCommandType(0x04));
+    set(mcLong(time));
+}
+
 void Client::disconnect(const std::string & reason)
 {
     sendKick(reason);
@@ -227,6 +233,7 @@ void Client::handleLogin(void)
     set(mcInt(70));
     set(mcInt(10));
 
+    sendTimeUpdate(m_server->getTicks());
 
     /*
     set(mcCommandType(0x09));
@@ -244,10 +251,6 @@ void Client::handleLogin(void)
     set(mcFloat(0));
     set(mcFloat(0));
     set(mcByte(0));
-
-
-    set(mcCommandType(0x04));
-    set(mcLong(6000));
 
     set(mcCommandType(0x22));
     set(m_eid);
