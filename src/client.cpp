@@ -15,7 +15,6 @@
 
 Client::~Client()
 {
-    LOG_DEBUG << "client destroyed (EID " << m_eid << ")\n";
 }
 
 void Client::read(void)
@@ -41,7 +40,6 @@ Client::Client(boost::asio::io_service & ioService, Server * server)
     , m_server(server)
     , m_username("Unknown")
 {
-    LOG_DEBUG << "client created\n";
 }
 
 void Client::writeIfNeeded(void)
@@ -130,8 +128,6 @@ void Client::handleRead(const boost::system::error_code & error)
     mcCommandType command;
     if (!get(command)) return read();
 
-    LOG_DEBUG << "got command: " << std::hex << unsigned(command) << "\n";
-
     if (m_state == CONNECTED) {
         switch (command) {
             case 0x01: // Login request
@@ -144,6 +140,7 @@ void Client::handleRead(const boost::system::error_code & error)
                 handlePing();
                 break;
             default:
+                LOG_DEBUG << "unknown command: " << std::hex << unsigned(command) << "\n";
                 disconnect(u8"Packet stream corrupt");
                 break;
         }
@@ -165,6 +162,7 @@ void Client::handleRead(const boost::system::error_code & error)
                 handlePlayerPosition();
                 break;
             default:
+                LOG_DEBUG << "unknown command: " << std::hex << unsigned(command) << "\n";
                 disconnect(u8"Packet stream corrupt");
                 break;
         }
@@ -312,8 +310,6 @@ void Client::handlePlayerPositionUpdate(void)
     if (!get(onGround)) return read();
 
     // TODO: do something here
-
-    LOG_DEBUG << x << " " << y << " " << z << "\n";
 }
 
 void Client::handlePlayerLook(void)
