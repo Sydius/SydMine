@@ -177,6 +177,9 @@ void Client::handleRead(const boost::system::error_code & error)
             case 0x0D: // Player position
                 handlePlayerPosition();
                 break;
+            case 0x13: // Entity action
+                handlePlayerAction();
+                break;
             case 0xFF: // Disconnect
                 m_state = DISCONNECTED;
                 m_socket.cancel();
@@ -376,6 +379,18 @@ void Client::handlePlayerPosition(void)
     setX(x);
     setY(y);
     setZ(z);
+}
+
+void Client::handlePlayerAction(void)
+{
+    EID eid;
+    if (!get(eid)) return read();
+    if (eid != m_eid) return disconnect(u8"Invalid action packet entity ID");
+
+    mcByte action;
+    if (!get(action)) return read();
+
+    // TODO: do something with action
 }
 
 // Template helper

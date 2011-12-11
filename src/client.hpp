@@ -92,6 +92,7 @@ class Client: public Entity
         void handlePlayerPositionUpdate(void);
         void handlePlayerLook(void);
         void handlePlayerPosition(void);
+        void handlePlayerAction(void);
 
         bool get(mcByte & b);
         bool get(mcUByte & b);
