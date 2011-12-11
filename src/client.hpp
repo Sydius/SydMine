@@ -92,6 +92,7 @@ class Client: public Entity
         void handlePlayerPositionUpdate(void);
         void handlePlayerLook(void);
         void handlePlayerPosition(void);
+        void handleDig(void);
         void handleHoldingChange(void);
         void handleAnimation(void);
         void handlePlayerAction(void);

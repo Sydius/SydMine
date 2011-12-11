@@ -177,6 +177,9 @@ void Client::handleRead(const boost::system::error_code & error)
             case 0x0D: // Player position
                 handlePlayerPosition();
                 break;
+            case 0x0E: // Dig
+                handleDig();
+                break;
             case 0x10: // Holding change
                 handleHoldingChange();
                 break;
@@ -388,6 +391,22 @@ void Client::handlePlayerPosition(void)
     setX(x);
     setY(y);
     setZ(z);
+}
+
+void Client::handleDig(void)
+{
+    mcByte status;
+    if (!get(status)) return read();
+    mcInt x;
+    if (!get(x)) return read();
+    mcByte y;
+    if (!get(y)) return read();
+    mcInt z;
+    if (!get(z)) return read();
+    mcByte face;
+    if (!get(face)) return read();
+
+    // TODO: do something?
 }
 
 void Client::handleHoldingChange(void)
