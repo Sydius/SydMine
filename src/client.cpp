@@ -272,6 +272,8 @@ void Client::handleLogin(void)
     set(mcInt(getZ()));
     set(mcByte(0));
     set(mcByte(0));
+
+    m_server->notifyConnected(this, true);
 }
 
 void Client::handleHandshake(void)

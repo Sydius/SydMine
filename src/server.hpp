@@ -22,6 +22,7 @@ class Server
         unsigned int getTicks(void) const;
 
         void notifyChat(Client * client, const std::string & msg);
+        void notifyConnected(Client * client, bool connected);
 
         void reloadConfig(void);
 

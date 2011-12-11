@@ -86,6 +86,18 @@ void Server::notifyChat(Client * client, const std::string & msg)
     }
 }
 
+void Server::notifyConnected(Client * client, bool connected)
+{
+    // TODO: sanitize, add support for commands
+    std::string chat = std::string("") + client->getName() + (connected ? u8" connected" : u8" disconnected");
+
+    for (auto & peer: m_clients) {
+        if (peer.second->getState() == Client::PLAYING) {
+            peer.second->sendChat(chat);
+        }
+    }
+}
+
 void Server::reloadConfig(void)
 {
     namespace po = boost::program_options;
