@@ -183,6 +183,9 @@ void Client::handleRead(const boost::system::error_code & error)
             case 0x13: // Entity action
                 handlePlayerAction();
                 break;
+            case 0x65: // Close window
+                handleCloseWindow();
+                break;
             case 0xFF: // Disconnect
                 m_state = DISCONNECTED;
                 m_socket.cancel();
@@ -402,6 +405,14 @@ void Client::handlePlayerAction(void)
     if (!get(action)) return read();
 
     // TODO: do something with action
+}
+
+void Client::handleCloseWindow(void)
+{
+    mcByte windowID;
+    if (!get(windowID)) return read();
+
+    // TODO: do something?
 }
 
 // Template helper

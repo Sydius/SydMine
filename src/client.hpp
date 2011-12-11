@@ -94,6 +94,7 @@ class Client: public Entity
         void handlePlayerPosition(void);
         void handleHoldingChange(void);
         void handlePlayerAction(void);
+        void handleCloseWindow(void);
 
         bool get(mcByte & b);
         bool get(mcUByte & b);
