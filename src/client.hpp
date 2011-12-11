@@ -7,10 +7,11 @@
 #include "types.hpp"
 #include "netutil.hpp"
 #include "chunk.hpp"
+#include "entity.hpp"
 
 class Server;
 
-class Client
+class Client: public Entity
 {
     public:
         typedef std::shared_ptr<Client> pointer;

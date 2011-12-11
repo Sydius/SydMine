@@ -14,3 +14,5 @@ typedef float mcFloat; // No standard way to guarantee? Bah!
 typedef double mcDouble; // No standard way to guarantee
 typedef mcUByte mcCommandType;
 typedef mcLong mcLargest;
+
+typedef int AbsLoc;

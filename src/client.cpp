@@ -244,19 +244,19 @@ void Client::handleLogin(void)
     set(mcLong(1));*/
 
     set(mcCommandType(0x0D));
-    set(mcDouble(75));
+    set(mcDouble(getX()));
     set(mcDouble(77));
-    set(mcDouble(75));
-    set(mcDouble(75));
+    set(mcDouble(getY()));
+    set(mcDouble(getZ()));
     set(mcFloat(0));
     set(mcFloat(0));
     set(mcByte(0));
 
     set(mcCommandType(0x22));
     set(m_eid);
-    set(mcInt(0));
-    set(mcInt(70*32));
-    set(mcInt(0));
+    set(mcInt(getX()));
+    set(mcInt(getY()));
+    set(mcInt(getZ()));
     set(mcByte(0));
     set(mcByte(0));
 }
