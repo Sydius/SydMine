@@ -177,6 +177,9 @@ void Client::handleRead(const boost::system::error_code & error)
             case 0x0D: // Player position
                 handlePlayerPosition();
                 break;
+            case 0x10: // Holding change
+                handleHoldingChange();
+                break;
             case 0x13: // Entity action
                 handlePlayerAction();
                 break;
@@ -379,6 +382,14 @@ void Client::handlePlayerPosition(void)
     setX(x);
     setY(y);
     setZ(z);
+}
+
+void Client::handleHoldingChange(void)
+{
+    mcShort slot;
+    if (!get(slot)) return read();
+
+    // TODO: do something?
 }
 
 void Client::handlePlayerAction(void)
