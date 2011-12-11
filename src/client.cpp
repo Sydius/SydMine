@@ -167,6 +167,10 @@ void Client::handleRead(const boost::system::error_code & error)
             case 0x0D: // Player position
                 handlePlayerPosition();
                 break;
+            case 0xFF: // Disconnect
+                m_state = DISCONNECTED;
+                m_socket.cancel();
+                break;
             default:
                 LOG_DEBUG << "unknown command: " << std::hex << unsigned(command) << "\n";
                 disconnect(u8"Packet stream corrupt");
