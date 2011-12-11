@@ -113,7 +113,7 @@ void Client::addPeer(Client * peer)
     set(peer->getEID());
     set(peer->getName());
     set(mcInt(peer->getX()));
-    set(mcInt(peer->getY()));
+    set(mcInt(71 * 32));
     set(mcInt(peer->getZ()));
     set(mcByte(0)); // TODO: fill in (rotation)
     set(mcByte(0)); // TODO: fill in (pitch)

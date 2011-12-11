@@ -100,6 +100,7 @@ void Server::notifyConnected(Client * client, bool connected)
             if (peer.second->getEID() != client->getEID()) {
                 if (connected) {
                     peer.second->addPeer(client);
+                    client->addPeer(peer.second.get());
                 } else {
                     peer.second->removePeer(client);
                 }
