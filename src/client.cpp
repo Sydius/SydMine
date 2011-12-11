@@ -62,12 +62,12 @@ void Client::sendKick(const std::string & reason)
     set(reason);
 }
 
-void Client::sendInitChunk(Chunk::Coord x, Chunk::Coord z)
+void Client::sendInitChunk(Chunk::Coord x, Chunk::Coord z, bool enable)
 {
     set(mcCommandType(0x32));
     set(mcInt(x));
     set(mcInt(z));
-    set(mcByte(1)); // enable
+    set(mcByte(enable)); // enable
 }
 
 void Client::sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk)

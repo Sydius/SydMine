@@ -52,7 +52,7 @@ class Client
         void writeIfNeeded(void);
 
         void sendKick(const std::string & reason);
-        void sendInitChunk(Chunk::Coord x, Chunk::Coord z);
+        void sendInitChunk(Chunk::Coord x, Chunk::Coord z, bool enable);
         void sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk);
 
         void disconnect(const std::string & reason);
