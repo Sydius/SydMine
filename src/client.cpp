@@ -463,6 +463,7 @@ bool Client::get(std::string & str)
     mcShort len = 0;
     if (!get(len)) return false;
 
+    str.clear();
     std::u16string utf16;
     for (mcShort i = 0; i < len; i++) {
         mcShort c;
