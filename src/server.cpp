@@ -25,6 +25,9 @@ void Server::checkClientStatus(void)
     // Check for disconnected clients
     for (auto & client: m_clients) {
         if (client.second->getState() == Client::DISCONNECTED) {
+            if (client.second->hasPlayed()) {
+                notifyConnected(client.second.get(), false);
+            }
             LOG_NOTICE << "client disconnected (EID " << client.second->getEID() << "): " << client.second->socket().remote_endpoint() << "\n";
             m_clients.erase(client.first);
         } else if (client.second->getState() == Client::PLAYING) {

@@ -55,6 +55,11 @@ class Client: public Entity
             return m_state;
         }
 
+        bool hasPlayed(void) const
+        {
+            return m_hasPlayed;
+        }
+
         void writeIfNeeded(void);
 
         void sendKick(const std::string & reason);
@@ -115,6 +120,7 @@ class Client: public Entity
         boost::asio::ip::tcp::socket m_socket;
         EID m_eid;
         State m_state;
+        bool m_hasPlayed;
         boost::asio::streambuf m_incoming;
         boost::asio::streambuf m_outgoing;
         std::size_t m_readNeeded;

@@ -31,6 +31,7 @@ Client::Client(boost::asio::io_service & ioService, Server * server)
     : m_socket(ioService)
     , m_eid(0)
     , m_state(LISTENING)
+    , m_hasPlayed(false)
     , m_incoming()
     , m_outgoing()
     , m_readNeeded(sizeof(mcCommandType))
@@ -236,6 +237,7 @@ void Client::handleLogin(void)
     set(mcUByte(m_server->getPlayingCount()));
 
     m_state = PLAYING;
+    m_hasPlayed = true;
     m_server->chunkSubscribe(this, 0, 0); // TODO: use player coords
     m_server->chunkSubscribe(this, -1, 0); // TODO: use player coords
     m_server->chunkSubscribe(this, 0, -1); // TODO: use player coords
