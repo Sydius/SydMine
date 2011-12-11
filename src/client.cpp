@@ -312,7 +312,11 @@ void Client::handlePlayerPositionUpdate(void)
     mcByte onGround;
     if (!get(onGround)) return read();
 
-    // TODO: do something here
+    // TODO: validate
+
+    setX(x);
+    setY(y);
+    setZ(z);
 }
 
 void Client::handlePlayerLook(void)
@@ -343,6 +347,10 @@ void Client::handlePlayerPosition(void)
     if (!get(onGround)) return read();
 
     // TODO: do something here
+
+    setX(x);
+    setY(y);
+    setZ(z);
 }
 
 // Template helper
