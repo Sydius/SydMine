@@ -6,6 +6,7 @@
 #include "eid.hpp"
 #include "types.hpp"
 #include "netutil.hpp"
+#include "chunk.hpp"
 
 class Server;
 
@@ -51,6 +52,8 @@ class Client
         void writeIfNeeded(void);
 
         void sendKick(const std::string & reason);
+        void sendInitChunk(int x, int z);
+        void sendChunk(int x, int z, const Chunk & chunk);
 
         void disconnect(const std::string & reason);
 

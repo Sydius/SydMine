@@ -9,6 +9,7 @@ Server::Server(boost::asio::io_service & ioService, int port, const std::string 
                 boost::asio::ip::tcp::v4(), port))
     , m_clients()
     , m_configFile(configFile)
+    , m_chunkManager(".") // TODO: replace with real world dir
     , m_maxPlayers(0)
     , m_desc()
     , m_requireAuth(true)
@@ -75,6 +76,11 @@ void Server::reloadConfig(void)
     std::ifstream in(m_configFile); // bizarre, but the config file parser won't take a string
     po::store(po::parse_config_file(in, desc), vm);
     po::notify(vm);
+}
+
+void Server::chunkSubscribe(Client * client, int x, int z)
+{
+    m_chunkManager.subscribe(client, x, z);
 }
 
 void Server::accept(void)

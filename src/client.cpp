@@ -58,6 +58,18 @@ void Client::sendKick(const std::string & reason)
     set(reason);
 }
 
+void Client::sendInitChunk(int x, int z)
+{
+    set(mcCommandType(0x32));
+    set(mcInt(x));
+    set(mcInt(z));
+    set(mcByte(1)); // enable
+}
+
+void Client::sendChunk(int x, int z, const Chunk & chunk)
+{
+}
+
 void Client::disconnect(const std::string & reason)
 {
     sendKick(reason);
@@ -177,6 +189,7 @@ void Client::handleLogin(void)
     set(mcUByte(m_server->getPlayingCount()));
 
     m_state = PLAYING;
+    m_server->chunkSubscribe(this, 0, 0); // TODO: use player coords
 }
 
 void Client::handleHandshake(void)

@@ -10,7 +10,12 @@ class Chunk
 {
     public:
         Chunk();
-        
+
+        const uint8_t * getData(void) const
+        {
+            return m_data.data;
+        }
+
     private:
     union {
         struct {
