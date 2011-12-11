@@ -52,8 +52,8 @@ class Client
         void writeIfNeeded(void);
 
         void sendKick(const std::string & reason);
-        void sendInitChunk(int x, int z);
-        void sendChunk(int x, int z, const Chunk & chunk);
+        void sendInitChunk(Chunk::Coord x, Chunk::Coord z);
+        void sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk);
 
         void disconnect(const std::string & reason);
 

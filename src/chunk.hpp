@@ -9,6 +9,8 @@
 class Chunk
 {
     public:
+        typedef int Coord;
+
         Chunk();
 
         int getDataSize(void) const

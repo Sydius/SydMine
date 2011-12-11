@@ -62,7 +62,7 @@ void Client::sendKick(const std::string & reason)
     set(reason);
 }
 
-void Client::sendInitChunk(int x, int z)
+void Client::sendInitChunk(Chunk::Coord x, Chunk::Coord z)
 {
     set(mcCommandType(0x32));
     set(mcInt(x));
@@ -70,7 +70,7 @@ void Client::sendInitChunk(int x, int z)
     set(mcByte(1)); // enable
 }
 
-void Client::sendChunk(int x, int z, const Chunk & chunk)
+void Client::sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk)
 {
     set(mcCommandType(0x33));
     set(mcInt(x*chunk.getXSize()));
