@@ -122,6 +122,8 @@ void Client::addPeer(Client * peer)
 
 void Client::removePeer(Client * peer)
 {
+    set(mcCommandType(0x1D));
+    set(peer->getEID());
 }
 
 void Client::disconnect(const std::string & reason)
