@@ -16,3 +16,4 @@ typedef mcUByte mcCommandType;
 typedef mcLong mcLargest;
 
 typedef mcDouble AbsLoc;
+typedef mcFloat Rot;

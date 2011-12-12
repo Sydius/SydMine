@@ -115,8 +115,8 @@ void Client::addPeer(Client * peer)
     set(mcInt(peer->getX()*32));
     set(mcInt(peer->getY()*32));
     set(mcInt(peer->getZ()*32));
-    set(mcByte(0)); // TODO: fill in (rotation)
-    set(mcByte(0)); // TODO: fill in (pitch)
+    set(mcByte(peer->getYaw() / 360 * 255)); // TODO: fill in (rotation)
+    set(mcByte(peer->getPitch() / 360 * 255)); // TODO: fill in (pitch)
     set(mcShort(0)); // TODO: fill in (holding)
 }
 
@@ -389,6 +389,9 @@ void Client::handlePlayerLook(void)
     if (!get(pitch)) return read();
     mcByte onGround;
     if (!get(onGround)) return read();
+
+    setYaw(yaw);
+    setPitch(pitch);
 }
 
 void Client::handlePlayerPosition(void)
@@ -413,6 +416,8 @@ void Client::handlePlayerPosition(void)
     setX(x);
     setY(y);
     setZ(z);
+    setYaw(yaw);
+    setPitch(pitch);
 }
 
 void Client::handleDig(void)
