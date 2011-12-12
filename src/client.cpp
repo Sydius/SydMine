@@ -543,15 +543,27 @@ bool Client::get(mcULong & l)
 
 bool Client::get(mcFloat & f)
 {
-    bool ret = getHelper(f, m_data, m_dataItem, m_incoming, m_readNeeded);
-    f = ntohl(f);
+    union {
+        mcFloat f;
+        uint32_t i;
+    } t;
+
+    bool ret = getHelper(t.i, m_data, m_dataItem, m_incoming, m_readNeeded);
+    t.i = ntohl(t.i);
+    f = t.f;
     return ret;
 }
 
 bool Client::get(mcDouble & d)
 {
-    bool ret = getHelper(d, m_data, m_dataItem, m_incoming, m_readNeeded);
-    d = ntohll(d);
+    union {
+        mcDouble d;
+        uint64_t i;
+    } t;
+
+    bool ret = getHelper(t.i, m_data, m_dataItem, m_incoming, m_readNeeded);
+    t.i = ntohll(t.i);
+    d = t.d;
     return ret;
 }
 
