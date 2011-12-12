@@ -15,6 +15,7 @@ class Entity
             , m_lastZ(72)
             , m_yaw (0.0f)
             , m_pitch (0.0f)
+            , m_ticks (0)
         {}
 
         void setEID(EID eid) { m_eid = eid; }
@@ -40,7 +41,10 @@ class Entity
             m_lastX = m_x;
             m_lastY = m_y;
             m_lastZ = m_z;
+            m_ticks++;
         }
+
+        bool forceTeleport(void) const { return !(m_ticks % 5); }
 
         virtual ~Entity() {}
     private:
@@ -55,4 +59,6 @@ class Entity
 
         Rot m_yaw;
         Rot m_pitch;
+        
+        int m_ticks;
 };
