@@ -280,9 +280,9 @@ void Client::handleLogin(void)
     m_server->chunkSubscribe(this, -1, -1); // TODO: use player coords
 
     set(mcCommandType(0x06));
-    set(mcInt(10));
-    set(mcInt(70));
-    set(mcInt(10));
+    set(mcInt(0));
+    set(mcInt(71));
+    set(mcInt(0));
 
     sendTimeUpdate(m_server->getTicks());
 
@@ -295,21 +295,22 @@ void Client::handleLogin(void)
     set(mcLong(1));*/
 
     set(mcCommandType(0x0D));
-    set(mcDouble(getX()));
-    set(mcDouble(getY() + PLAYER_HEIGHT));
-    set(mcDouble(getY()));
-    set(mcDouble(getZ()));
+    set(mcDouble(getX() / 32.0));
+    set(mcDouble(getY() / 32.0 + 1.6));
+    set(mcDouble(getY() / 32.0));
+    set(mcDouble(getZ() / 32.0));
     set(mcFloat(0));
     set(mcFloat(0));
-    set(mcByte(0));
+    set(mcByte(1));
 
+    /*
     set(mcCommandType(0x22));
     set(m_eid);
     set(mcInt(getX()));
     set(mcInt(getY()));
     set(mcInt(getZ()));
     set(mcByte(0));
-    set(mcByte(0));
+    set(mcByte(0));*/
 
     m_server->notifyConnected(this, true);
 }
@@ -621,12 +622,24 @@ void Client::set(mcULong l)
 
 void Client::set(mcFloat f)
 {
-    setHelper(htonl(f), m_outgoing);
+    union {
+        mcFloat f;
+        uint32_t i;
+    } t;
+    t.f = f;
+
+    setHelper(htonl(t.i), m_outgoing);
 }
 
 void Client::set(mcDouble d)
 {
-    setHelper(htonll(d), m_outgoing);
+    union {
+        mcDouble d;
+        uint64_t i;
+    } t;
+    t.d = d;
+
+    setHelper(htonll(t.i), m_outgoing);
 }
 
 void Client::set(const std::string & str)
