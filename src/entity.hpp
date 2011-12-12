@@ -50,7 +50,18 @@ class Entity
             m_ticks++;
         }
 
-        bool forceTeleport(void) const { return !(m_ticks % 5); }
+        bool forceTeleport(void) const
+        {
+            if (m_x == m_lastX &&
+                m_y == m_lastY &&
+                m_z == m_lastZ &&
+                m_yaw == m_lastYaw &&
+                m_pitch == m_lastPitch)
+            {
+                return !(m_ticks % 40);
+            }
+            return !(m_ticks % 5);
+        }
 
         virtual ~Entity() {}
     private:
