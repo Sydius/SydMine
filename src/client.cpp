@@ -31,7 +31,6 @@ void Client::read(void)
 
 Client::Client(boost::asio::io_service & ioService, Server * server)
     : m_socket(ioService)
-    , m_eid(0)
     , m_state(LISTENING)
     , m_hasPlayed(false)
     , m_incoming()
@@ -105,6 +104,30 @@ void Client::sendChat(const std::string & msg)
 {
     set(mcCommandType(0x03));
     set(msg);
+}
+
+void Client::sendEntityMove(const Entity * entity)
+{
+    int xOff = (entity->getX() - entity->getLastX()) * 32;
+    int yOff = (entity->getY() - entity->getLastY()) * 32;
+    int zOff = (entity->getZ() - entity->getLastZ()) * 32;
+    zOff = 1000;
+
+    if (xOff >= -128 && xOff <= 127 && yOff >= -128 && yOff <= 127 && zOff >= -128 && zOff <= 127) {
+        set(mcCommandType(0x1F));
+        set(entity->getEID());
+        set(mcByte(xOff));
+        set(mcByte(yOff));
+        set(mcByte(zOff));
+    } else {
+        set(mcCommandType(0x22));
+        set(entity->getEID());
+        set(mcInt(entity->getX()*32));
+        set(mcInt(entity->getY()*32));
+        set(mcInt(entity->getZ()*32));
+        set(mcByte(entity->getYaw()/360*255));
+        set(mcByte(entity->getPitch()/360*255));
+    }
 }
 
 void Client::addPeer(Client * peer)
@@ -263,7 +286,7 @@ void Client::handleLogin(void)
         return disconnect(u8"Server full");
 
     set(mcCommandType(0x01));
-    set(m_eid);
+    set(getEID());
     set(u8""); // Unused string
     set(mcLong(1)); // TODO: fill with map seed
     set(mcInt(0)); // survival mode
@@ -448,7 +471,7 @@ void Client::handleAnimation(void)
 {
     EID eid;
     if (!get(eid)) return read();
-    if (eid != m_eid) return disconnect(u8"Invalid animation packet entity ID");
+    if (eid != getEID()) return disconnect(u8"Invalid animation packet entity ID");
 
     mcByte animation;
     if (!get(animation)) return read();
@@ -460,7 +483,7 @@ void Client::handlePlayerAction(void)
 {
     EID eid;
     if (!get(eid)) return read();
-    if (eid != m_eid) return disconnect(u8"Invalid action packet entity ID");
+    if (eid != getEID()) return disconnect(u8"Invalid action packet entity ID");
 
     mcByte action;
     if (!get(action)) return read();

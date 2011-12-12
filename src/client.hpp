@@ -33,15 +33,7 @@ class Client: public Entity
             return m_socket;
         }
 
-        void setEID(EID eid)
-        {
-            m_eid = eid;
-        }
 
-        EID getEID(void) const
-        {
-            return m_eid;
-        }
 
         std::string getName(void) const
         {
@@ -67,6 +59,7 @@ class Client: public Entity
         void sendChunk(Chunk::Coord x, Chunk::Coord z, const Chunk & chunk);
         void sendTimeUpdate(unsigned int time);
         void sendChat(const std::string & msg);
+        void sendEntityMove(const Entity * entity);
 
         void addPeer(Client * peer);
         void removePeer(Client * peer);
@@ -126,7 +119,6 @@ class Client: public Entity
         void set(const std::string & str);
 
         boost::asio::ip::tcp::socket m_socket;
-        EID m_eid;
         State m_state;
         bool m_hasPlayed;
         boost::asio::streambuf m_incoming;

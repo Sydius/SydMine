@@ -34,6 +34,23 @@ void Server::checkClientStatus(void)
             if (!(m_curTick % 20)) {
                 client.second->sendTimeUpdate(m_curTick);
             }
+
+            sendUpdatedPositions(client.second.get());
+        }
+    }
+
+    for (auto & client: m_clients) {
+        if (client.second->getState() == Client::PLAYING) {
+            client.second->tickPosition();
+        }
+    }
+}
+
+void Server::sendUpdatedPositions(Client * client)
+{
+    for (auto & peer: m_clients) {
+        if (peer.second->getState() == Client::PLAYING && client->getEID() != peer.second->getEID()) {
+            client->sendEntityMove(peer.second.get());
         }
     }
 }

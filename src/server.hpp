@@ -33,6 +33,7 @@ class Server
         void handleAccept(Client::pointer newClient,
                 const boost::system::error_code & error);
         void checkClientStatus(void);
+        void sendUpdatedPositions(Client * client);
 
         boost::asio::ip::tcp::acceptor m_acceptor;
         ClientList m_clients;
