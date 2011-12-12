@@ -112,16 +112,10 @@ void Client::sendEntityMove(const Entity * entity)
     int yOff = (entity->getY() - entity->getLastY()) * 32.0 + 0.5;
     int zOff = (entity->getZ() - entity->getLastZ()) * 32.0 + 0.5;
 
-    if (!entity->forceTeleport() &&
-            (xOff >= -128 && xOff <= 127 &&
-             yOff >= -128 && yOff <= 127 &&
-             zOff >= -128 && zOff <= 127)) {
-        set(mcCommandType(0x1F));
-        set(entity->getEID());
-        set(mcByte(xOff));
-        set(mcByte(yOff));
-        set(mcByte(zOff));
-    } else {
+    if (entity->forceTeleport() ||
+             !(xOff >= -128 && xOff <= 127 &&
+               yOff >= -128 && yOff <= 127 &&
+               zOff >= -128 && zOff <= 127)) {
         set(mcCommandType(0x22));
         set(entity->getEID());
         set(mcInt(entity->getX()*32));
@@ -129,6 +123,33 @@ void Client::sendEntityMove(const Entity * entity)
         set(mcInt(entity->getZ()*32));
         set(mcByte(entity->getYaw()/360*255));
         set(mcByte(entity->getPitch()/360*255));
+    } else {
+        if ((xOff || yOff || zOff) &&
+                (entity->getLastPitch() == entity->getPitch() &&
+                 entity->getLastYaw() == entity->getYaw())) {
+            set(mcCommandType(0x1F));
+            set(entity->getEID());
+            set(mcByte(xOff));
+            set(mcByte(yOff));
+            set(mcByte(zOff));
+        } else if (xOff || yOff || zOff) {
+            set(mcCommandType(0x21));
+            set(entity->getEID());
+            set(mcByte(xOff));
+            set(mcByte(yOff));
+            set(mcByte(zOff));
+            set(mcByte(entity->getYaw()/360*255));
+            set(mcByte(entity->getPitch()/360*255));
+        } else if (entity->getLastPitch() != entity->getPitch() ||
+                   entity->getLastYaw() != entity->getYaw()) {
+            set(mcCommandType(0x20));
+            set(entity->getEID());
+            set(mcByte(entity->getYaw()/360*255));
+            set(mcByte(entity->getPitch()/360*255));
+        } else {
+            set(mcCommandType(0x1E));
+            set(entity->getEID());
+        }
     }
 }
 
