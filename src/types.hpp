@@ -15,4 +15,4 @@ typedef double mcDouble; // No standard way to guarantee
 typedef mcUByte mcCommandType;
 typedef mcLong mcLargest;
 
-typedef int AbsLoc;
+typedef mcDouble AbsLoc;

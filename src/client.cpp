@@ -112,9 +112,9 @@ void Client::addPeer(Client * peer)
     set(mcCommandType(0x14));
     set(peer->getEID());
     set(peer->getName());
-    set(mcInt(peer->getX()));
-    set(mcInt(peer->getY()));
-    set(mcInt(peer->getZ()));
+    set(mcInt(peer->getX()*32));
+    set(mcInt(peer->getY()*32));
+    set(mcInt(peer->getZ()*32));
     set(mcByte(0)); // TODO: fill in (rotation)
     set(mcByte(0)); // TODO: fill in (pitch)
     set(mcShort(0)); // TODO: fill in (holding)
@@ -295,10 +295,10 @@ void Client::handleLogin(void)
     set(mcLong(1));*/
 
     set(mcCommandType(0x0D));
-    set(mcDouble(getX() / 32.0));
-    set(mcDouble(getY() / 32.0 + PLAYER_HEIGHT));
-    set(mcDouble(getY() / 32.0));
-    set(mcDouble(getZ() / 32.0));
+    set(mcDouble(getX()));
+    set(mcDouble(getY() + PLAYER_HEIGHT));
+    set(mcDouble(getY()));
+    set(mcDouble(getZ()));
     set(mcFloat(0));
     set(mcFloat(0));
     set(mcByte(1));
@@ -376,9 +376,9 @@ void Client::handlePlayerPositionUpdate(void)
 
     // TODO: validate
 
-    setX(x*32);
-    setY(y*32);
-    setZ(z*32);
+    setX(x);
+    setY(y);
+    setZ(z);
 }
 
 void Client::handlePlayerLook(void)

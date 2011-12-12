@@ -7,7 +7,7 @@ class Entity
     public:
         Entity()
             : m_x (0)
-            , m_y (72*32)
+            , m_y (72)
             , m_z (0)
         {}
 
