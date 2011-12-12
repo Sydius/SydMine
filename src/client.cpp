@@ -296,7 +296,7 @@ void Client::handleLogin(void)
 
     set(mcCommandType(0x0D));
     set(mcDouble(getX() / 32.0));
-    set(mcDouble(getY() / 32.0 + 1.6));
+    set(mcDouble(getY() / 32.0 + PLAYER_HEIGHT));
     set(mcDouble(getY() / 32.0));
     set(mcDouble(getZ() / 32.0));
     set(mcFloat(0));
