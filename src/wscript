@@ -4,7 +4,6 @@ sources = [
     'client.cpp',
     'eid.cpp',
     'netutil.cpp',
-    'chunkmanager.cpp',
     'chunk.cpp',
 ]
 

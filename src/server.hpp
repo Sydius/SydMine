@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include "client.hpp"
 #include "eid.hpp"
-#include "chunkmanager.hpp"
 
 class Server
 {
@@ -38,8 +37,6 @@ class Server
         boost::asio::ip::tcp::acceptor m_acceptor;
         ClientList m_clients;
         std::string m_configFile;
-
-        ChunkManager m_chunkManager;
 
         unsigned int m_curTick;
 

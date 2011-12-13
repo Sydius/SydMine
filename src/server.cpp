@@ -3,13 +3,13 @@
 #include <fstream>
 #include "server.hpp"
 #include "logging.hpp"
+#include "chunk.hpp"
 
 Server::Server(boost::asio::io_service & ioService, int port, const std::string & configFile)
     : m_acceptor(ioService, boost::asio::ip::tcp::endpoint(
                 boost::asio::ip::tcp::v4(), port))
     , m_clients()
     , m_configFile(configFile)
-    , m_chunkManager(".") // TODO: replace with real world dir
     , m_curTick(0)
     , m_maxPlayers(0)
     , m_desc()
@@ -144,7 +144,14 @@ void Server::reloadConfig(void)
 
 void Server::chunkSubscribe(Client * client, int x, int z)
 {
-    m_chunkManager.subscribe(client, x, z);
+    Chunk chunk;
+
+    for (int cx = x - 3; cx <= x + 3; cx++) {
+        for (int cz = z - 3; cz <= z + 3; cz++) {
+            client->sendInitChunk(cx, cz, true);
+            client->sendChunk(cx, cz, chunk);
+        }
+    }
 }
 
 void Server::accept(void)

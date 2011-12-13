@@ -11,7 +11,7 @@
 #include <boost/iostreams/filter/zlib.hpp>
 #include "logging.hpp"
 #include "server.hpp"
-#include "chunkmanager.hpp"
+#include "chunk.hpp"
 
 #define PLAYER_HEIGHT 1.62
 
