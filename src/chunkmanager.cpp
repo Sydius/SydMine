@@ -10,6 +10,10 @@ void ChunkManager::subscribe(Client * client, int x, int z)
 {
     Chunk chunk;
 
-    client->sendInitChunk(x, z, true);
-    client->sendChunk(x, z, chunk);
+    for (int cx = x - 3; cx <= x + 3; cx++) {
+        for (int cz = z - 3; cz <= z + 3; cz++) {
+            client->sendInitChunk(cx, cz, true);
+            client->sendChunk(cx, cz, chunk);
+        }
+    }
 }

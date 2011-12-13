@@ -320,9 +320,6 @@ void Client::handleLogin(void)
     m_state = PLAYING;
     m_hasPlayed = true;
     m_server->chunkSubscribe(this, 0, 0); // TODO: use player coords
-    m_server->chunkSubscribe(this, -1, 0); // TODO: use player coords
-    m_server->chunkSubscribe(this, 0, -1); // TODO: use player coords
-    m_server->chunkSubscribe(this, -1, -1); // TODO: use player coords
 
     set(mcCommandType(0x06));
     set(mcInt(0));
