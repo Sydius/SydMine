@@ -108,14 +108,13 @@ void Client::sendChat(const std::string & msg)
 
 void Client::sendEntityMove(const Entity * entity)
 {
-    int xOff = (entity->getX() - entity->getLastX()) * 32.0 + 0.5;
-    int yOff = (entity->getY() - entity->getLastY()) * 32.0 + 0.5;
-    int zOff = (entity->getZ() - entity->getLastZ()) * 32.0 + 0.5;
+    int xOff = int(entity->getX() * 32.0 + 0.5) - int(entity->getLastX() * 32.0 + 0.5);
+    int yOff = int(entity->getY() * 32.0 + 0.5) - int(entity->getLastY() * 32.0 + 0.5);
+    int zOff = int(entity->getZ() * 32.0 + 0.5) - int(entity->getLastZ() * 32.0 + 0.5);
 
-    if (entity->forceTeleport() ||
-             !(xOff >= -128 && xOff <= 127 &&
-               yOff >= -128 && yOff <= 127 &&
-               zOff >= -128 && zOff <= 127)) {
+    if (!(xOff >= -128 && xOff <= 127 &&
+          yOff >= -128 && yOff <= 127 &&
+          zOff >= -128 && zOff <= 127)) {
         set(mcCommandType(0x22));
         set(entity->getEID());
         set(mcInt(entity->getX()*32));
