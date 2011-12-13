@@ -33,8 +33,6 @@ class Client: public Entity
             return m_socket;
         }
 
-
-
         std::string getName(void) const
         {
             return m_username;
@@ -63,6 +61,8 @@ class Client: public Entity
 
         void addPeer(Client * peer);
         void removePeer(Client * peer);
+
+        void updateChunk(Chunk & chunk, int chunkX, int chunkZ);
 
         void disconnect(const std::string & reason);
 

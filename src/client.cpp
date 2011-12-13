@@ -171,6 +171,12 @@ void Client::removePeer(Client * peer)
     set(peer->getEID());
 }
 
+void Client::updateChunk(Chunk & chunk, int chunkX, int chunkZ)
+{
+    sendInitChunk(chunkX, chunkZ, true);
+    sendChunk(chunkX, chunkZ, chunk);
+}
+
 void Client::disconnect(const std::string & reason)
 {
     sendKick(reason);
@@ -319,7 +325,6 @@ void Client::handleLogin(void)
 
     m_state = PLAYING;
     m_hasPlayed = true;
-    m_server->chunkSubscribe(this, 0, 0); // TODO: use player coords
 
     set(mcCommandType(0x06));
     set(mcInt(0));

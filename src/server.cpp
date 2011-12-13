@@ -53,6 +53,18 @@ void Server::sendUpdatedPositions(Client * client)
             client->sendEntityMove(peer.second.get());
         }
     }
+
+    // Ensure the proper chunks are loaded
+    Chunk chunk;
+
+    int chunkX = client->getX() / 16;
+    int chunkZ = client->getZ() / 16;
+
+    for (int cx = chunkX - 3; cx <= chunkX + 3; cx++) {
+        for (int cz = chunkZ - 3; cz <= chunkZ + 3; cz++) {
+            client->updateChunk(chunk, cx, cz);
+        }
+    }
 }
 
 bool Server::tick(void)
@@ -140,18 +152,6 @@ void Server::reloadConfig(void)
     std::ifstream in(m_configFile); // bizarre, but the config file parser won't take a string
     po::store(po::parse_config_file(in, desc), vm);
     po::notify(vm);
-}
-
-void Server::chunkSubscribe(Client * client, int x, int z)
-{
-    Chunk chunk;
-
-    for (int cx = x - 3; cx <= x + 3; cx++) {
-        for (int cz = z - 3; cz <= z + 3; cz++) {
-            client->sendInitChunk(cx, cz, true);
-            client->sendChunk(cx, cz, chunk);
-        }
-    }
 }
 
 void Server::accept(void)

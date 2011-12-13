@@ -25,8 +25,6 @@ class Server
 
         void reloadConfig(void);
 
-        void chunkSubscribe(Client * client, int x, int z);
-
     private:
         void accept(void);
         void handleAccept(Client::pointer newClient,
