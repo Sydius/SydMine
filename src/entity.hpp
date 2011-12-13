@@ -23,6 +23,8 @@ class Entity
         void setEID(EID eid) { m_eid = eid; }
         EID getEID(void) const { return m_eid; }
 
+        Chunk::Coord getChunkX(void) const { return floor(m_x / 16); }
+        Chunk::Coord getChunkZ(void) const { return floor(m_z / 16); }
         Location getX(void) const { return m_x; }
         Location getY(void) const { return m_y; }
         Location getZ(void) const { return m_z; }

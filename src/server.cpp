@@ -57,11 +57,12 @@ void Server::sendUpdatedPositions(Client * client)
     // Ensure the proper chunks are loaded
     Chunk chunk;
 
-    int chunkX = client->getX() / 16;
-    int chunkZ = client->getZ() / 16;
+    Chunk::Coord chunkX = client->getChunkX();
+    Chunk::Coord chunkZ = client->getChunkZ();
 
-    for (int cx = chunkX - 3; cx <= chunkX + 3; cx++) {
-        for (int cz = chunkZ - 3; cz <= chunkZ + 3; cz++) {
+    static const Chunk::Coord chunkRange = 9;
+    for (Chunk::Coord cx = chunkX - chunkRange; cx <= chunkX + chunkRange; cx++) {
+        for (Chunk::Coord cz = chunkZ - chunkRange; cz <= chunkZ + chunkRange; cz++) {
             client->updateChunk(chunk, cx, cz);
         }
     }

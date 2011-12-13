@@ -3,6 +3,8 @@
 #include <memory>
 #include <vector>
 #include <boost/asio.hpp>
+#include <vector>
+#include <utility>
 #include "eid.hpp"
 #include "types.hpp"
 #include "netutil.hpp"
@@ -62,7 +64,7 @@ class Client: public Entity
         void addPeer(Client * peer);
         void removePeer(Client * peer);
 
-        void updateChunk(Chunk & chunk, int chunkX, int chunkZ);
+        void updateChunk(Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ);
 
         void disconnect(const std::string & reason);
 
@@ -133,4 +135,8 @@ class Client: public Entity
         Server * m_server;
 
         std::string m_username;
+
+        typedef std::pair<Chunk::Coord, Chunk::Coord> ChunkCoord;
+        typedef std::vector<ChunkCoord> ChunkCoordList;
+        ChunkCoordList m_chunksLoaded;
 };

@@ -9,6 +9,7 @@
 #include <boost/iostreams/filtering_streambuf.hpp>
 #include <boost/iostreams/copy.hpp>
 #include <boost/iostreams/filter/zlib.hpp>
+#include <cmath>
 #include "logging.hpp"
 #include "server.hpp"
 #include "chunk.hpp"
@@ -41,6 +42,7 @@ Client::Client(boost::asio::io_service & ioService, Server * server)
     , m_writing(false)
     , m_server(server)
     , m_username("Unknown")
+    , m_chunksLoaded()
 {
 }
 
@@ -171,10 +173,25 @@ void Client::removePeer(Client * peer)
     set(peer->getEID());
 }
 
-void Client::updateChunk(Chunk & chunk, int chunkX, int chunkZ)
+void Client::updateChunk(Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ)
 {
+    for (auto & coord: m_chunksLoaded) { 
+        if (coord.first == chunkX && coord.second == chunkZ) {
+            return;
+        }
+    }
     sendInitChunk(chunkX, chunkZ, true);
     sendChunk(chunkX, chunkZ, chunk);
+    m_chunksLoaded.push_back(ChunkCoord(chunkX, chunkZ));
+
+    for (auto iter = m_chunksLoaded.begin(); iter != m_chunksLoaded.end(); iter++) {
+        auto & coord = *iter;
+
+        if (abs(coord.first - getChunkX()) > 10 || abs(coord.second - getChunkZ()) > 10) {
+            sendInitChunk(coord.first, coord.second, false);
+            m_chunksLoaded.erase(iter);
+        }
+    }
 }
 
 void Client::disconnect(const std::string & reason)
