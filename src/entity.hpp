@@ -23,20 +23,20 @@ class Entity
         void setEID(EID eid) { m_eid = eid; }
         EID getEID(void) const { return m_eid; }
 
-        AbsLoc getX(void) const { return m_x; }
-        AbsLoc getY(void) const { return m_y; }
-        AbsLoc getZ(void) const { return m_z; }
-        AbsLoc getLastX(void) const { return m_lastX; }
-        AbsLoc getLastY(void) const { return m_lastY; }
-        AbsLoc getLastZ(void) const { return m_lastZ; }
+        Location getX(void) const { return m_x; }
+        Location getY(void) const { return m_y; }
+        Location getZ(void) const { return m_z; }
+        Location getLastX(void) const { return m_lastX; }
+        Location getLastY(void) const { return m_lastY; }
+        Location getLastZ(void) const { return m_lastZ; }
         Rot getYaw(void) const { return m_yaw; }
         Rot getLastYaw(void) const { return m_lastYaw; }
         Rot getPitch(void) const { return m_pitch; }
         Rot getLastPitch(void) const { return m_lastPitch; }
 
-        void setX(AbsLoc x) { m_x = x; }
-        void setY(AbsLoc y) { m_y = y; }
-        void setZ(AbsLoc z) { m_z = z; }
+        void setX(Location x) { m_x = x; }
+        void setY(Location y) { m_y = y; }
+        void setZ(Location z) { m_z = z; }
         void setYaw(Rot r) { m_yaw = r; }
         void setPitch(Rot r) { m_pitch = r; }
         
@@ -54,12 +54,12 @@ class Entity
     private:
         EID m_eid;
 
-        AbsLoc m_x;
-        AbsLoc m_lastX;
-        AbsLoc m_y;
-        AbsLoc m_lastY;
-        AbsLoc m_z;
-        AbsLoc m_lastZ;
+        Location m_x;
+        Location m_lastX;
+        Location m_y;
+        Location m_lastY;
+        Location m_z;
+        Location m_lastZ;
 
         Rot m_yaw;
         Rot m_lastYaw;
