@@ -52,6 +52,11 @@ class Client: public Entity
             return m_hasPlayed;
         }
 
+        bool waitingForChunks(void) const
+        {
+            return m_state == PLAYING && !m_chunksLoaded.size();
+        }
+
         void writeIfNeeded(void);
 
         void sendKick(const std::string & reason);
@@ -60,6 +65,7 @@ class Client: public Entity
         void sendTimeUpdate(unsigned int time);
         void sendChat(const std::string & msg);
         void sendEntityMove(const Entity * entity);
+        void sendPlayerPosition(void);
 
         void addPeer(Client * peer);
         void removePeer(Client * peer);

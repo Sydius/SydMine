@@ -54,6 +54,8 @@ void Server::sendUpdatedPositions(Client * client)
         }
     }
 
+    bool waitingForChunks = client->waitingForChunks();
+
     // Ensure the proper chunks are loaded
     Chunk chunk;
 
@@ -65,6 +67,10 @@ void Server::sendUpdatedPositions(Client * client)
         for (Chunk::Coord cz = chunkZ - chunkRange; cz <= chunkZ + chunkRange; cz++) {
             client->updateChunk(chunk, cx, cz);
         }
+    }
+
+    if (waitingForChunks && !client->waitingForChunks()) {
+        client->sendPlayerPosition();
     }
 }
 

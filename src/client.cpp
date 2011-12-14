@@ -154,6 +154,18 @@ void Client::sendEntityMove(const Entity * entity)
     }
 }
 
+void Client::sendPlayerPosition(void)
+{
+    set(mcCommandType(0x0D));
+    set(mcDouble(getX()));
+    set(mcDouble(getY() + PLAYER_HEIGHT));
+    set(mcDouble(getY()));
+    set(mcDouble(getZ()));
+    set(mcFloat(0));
+    set(mcFloat(0));
+    set(mcByte(1));
+}
+
 void Client::addPeer(Client * peer)
 {
     set(mcCommandType(0x14));
@@ -180,6 +192,7 @@ void Client::updateChunk(Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ
             return;
         }
     }
+
     sendInitChunk(chunkX, chunkZ, true);
     sendChunk(chunkX, chunkZ, chunk);
     m_chunksLoaded.push_back(ChunkCoord(chunkX, chunkZ));
@@ -358,14 +371,7 @@ void Client::handleLogin(void)
     set(mcShort(128));
     set(mcLong(1));*/
 
-    set(mcCommandType(0x0D));
-    set(mcDouble(getX()));
-    set(mcDouble(getY() + PLAYER_HEIGHT));
-    set(mcDouble(getY()));
-    set(mcDouble(getZ()));
-    set(mcFloat(0));
-    set(mcFloat(0));
-    set(mcByte(1));
+
 
     /*
     set(mcCommandType(0x22));
