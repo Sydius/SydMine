@@ -70,7 +70,7 @@ class Client: public Entity
         void addPeer(Client * peer);
         void removePeer(Client * peer);
 
-        void updateChunk(Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ);
+        void updateChunk(const Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ);
 
         void disconnect(const std::string & reason);
 

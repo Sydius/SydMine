@@ -11,6 +11,7 @@ Server::Server(boost::asio::io_service & ioService, int port, const std::string 
     , m_clients()
     , m_configFile(configFile)
     , m_curTick(0)
+    , m_loadedChunks()
     , m_maxPlayers(0)
     , m_desc()
     , m_requireAuth(true)
@@ -57,21 +58,35 @@ void Server::sendUpdatedPositions(Client * client)
     bool waitingForChunks = client->waitingForChunks();
 
     // Ensure the proper chunks are loaded
-    Chunk chunk;
-
     Chunk::Coord chunkX = client->getChunkX();
     Chunk::Coord chunkZ = client->getChunkZ();
 
     static const Chunk::Coord chunkRange = 9;
     for (Chunk::Coord cx = chunkX - chunkRange; cx <= chunkX + chunkRange; cx++) {
         for (Chunk::Coord cz = chunkZ - chunkRange; cz <= chunkZ + chunkRange; cz++) {
-            client->updateChunk(chunk, cx, cz);
+            client->updateChunk(getChunk(1, cx, cz), cx, cz); // TODO: replace world value
         }
     }
 
     if (waitingForChunks && !client->waitingForChunks()) {
         client->sendPlayerPosition();
     }
+}
+
+const Chunk & Server::getChunk(int world, Chunk::Coord x, Chunk::Coord y)
+{
+    std::string key = boost::lexical_cast<std::string>(world) + ":" +
+        boost::lexical_cast<std::string>(x) + "-" +
+        boost::lexical_cast<std::string>(y);
+
+    auto chunkIter = m_loadedChunks.find(key);
+    if (chunkIter != m_loadedChunks.end()) {
+        return (*chunkIter).second;
+    }
+
+    m_loadedChunks[key] = Chunk();
+
+    return m_loadedChunks[key];
 }
 
 bool Server::tick(void)

@@ -185,7 +185,7 @@ void Client::removePeer(Client * peer)
     set(peer->getEID());
 }
 
-void Client::updateChunk(Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ)
+void Client::updateChunk(const Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ)
 {
     for (auto & coord: m_chunksLoaded) { 
         if (coord.first == chunkX && coord.second == chunkZ) {

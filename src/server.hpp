@@ -31,12 +31,16 @@ class Server
                 const boost::system::error_code & error);
         void checkClientStatus(void);
         void sendUpdatedPositions(Client * client);
+        const Chunk & getChunk(int world, Chunk::Coord x, Chunk::Coord y);
 
         boost::asio::ip::tcp::acceptor m_acceptor;
         ClientList m_clients;
         std::string m_configFile;
 
         unsigned int m_curTick;
+
+        typedef std::unordered_map<std::string, Chunk> ChunkList;
+        ChunkList m_loadedChunks;
 
         // Config file options
         int m_maxPlayers;
