@@ -1,5 +1,6 @@
 #include <boost/program_options.hpp>
 #include <boost/program_options/parsers.hpp>
+#include <boost/algorithm/string.hpp>
 #include <fstream>
 #include "server.hpp"
 #include "logging.hpp"
@@ -61,10 +62,10 @@ void Server::sendUpdatedPositions(Client * client)
     Chunk::Coord chunkX = client->getChunkX();
     Chunk::Coord chunkZ = client->getChunkZ();
 
-    static const Chunk::Coord chunkRange = getChunkRange();
+    static const Chunk::Coord chunkRange = getChunkRange() - 1;
     for (Chunk::Coord cx = chunkX - chunkRange; cx <= chunkX + chunkRange; cx++) {
         for (Chunk::Coord cz = chunkZ - chunkRange; cz <= chunkZ + chunkRange; cz++) {
-            client->updateChunk(getChunk(1, cx, cz), cx, cz); // TODO: replace world value
+            client->updateChunk(getChunk(0, cx, cz), cx, cz); // TODO: replace world value
         }
     }
 
@@ -73,11 +74,9 @@ void Server::sendUpdatedPositions(Client * client)
     }
 }
 
-Chunk & Server::getChunk(int world, Chunk::Coord x, Chunk::Coord y)
+Chunk & Server::getChunk(int world, Chunk::Coord x, Chunk::Coord z)
 {
-    std::string key = boost::lexical_cast<std::string>(world) + ":" +
-        boost::lexical_cast<std::string>(x) + "-" +
-        boost::lexical_cast<std::string>(y);
+    std::string key = getChunkKey(world, x, z);
 
     auto chunkIter = m_loadedChunks.find(key);
     if (chunkIter != m_loadedChunks.end()) {
@@ -92,6 +91,32 @@ Chunk & Server::getChunk(int world, Chunk::Coord x, Chunk::Coord y)
 bool Server::tick(void)
 {
     checkClientStatus();
+
+    auto chunk = m_loadedChunks.begin();
+    
+    while (chunk != m_loadedChunks.end()) {
+        std::vector<std::string> parts;
+        boost::split(parts, (*chunk).first, boost::is_any_of(":|"));
+        //int world = boost::lexical_cast<int>(parts[0]);
+        Chunk::Coord x = boost::lexical_cast<Chunk::Coord>(parts[1]);
+        Chunk::Coord z = boost::lexical_cast<Chunk::Coord>(parts[2]);
+
+        bool used = false;
+        for (auto & client: m_clients) {
+            if (client.second->getState() == Client::PLAYING) {
+                if (abs(client.second->getChunkX() - x) < getChunkRange() &&
+                    abs(client.second->getChunkZ() - z) < getChunkRange()) {
+                    used = true;
+                }
+            }
+        }
+
+        if (!used) {
+            chunk = m_loadedChunks.erase(chunk);
+        } else {
+            ++chunk;
+        }
+    }
 
     m_curTick++;
     return true;
@@ -201,6 +226,13 @@ void Server::reloadConfig(void)
     std::ifstream in(m_configFile); // bizarre, but the config file parser won't take a string
     po::store(po::parse_config_file(in, desc), vm);
     po::notify(vm);
+}
+
+std::string Server::getChunkKey(int world, Chunk::Coord x, Chunk::Coord z)
+{
+    return boost::lexical_cast<std::string>(world) + ":" +
+        boost::lexical_cast<std::string>(x) + "|" +
+        boost::lexical_cast<std::string>(z);
 }
 
 void Server::accept(void)
