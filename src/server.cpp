@@ -25,20 +25,23 @@ Server::Server(boost::asio::io_service & ioService, int port, const std::string 
 void Server::checkClientStatus(void)
 {
     // Check for disconnected clients
-    for (auto & client: m_clients) {
-        if (client.second->getState() == Client::DISCONNECTED) {
-            if (client.second->hasPlayed()) {
-                notifyConnected(client.second.get(), false);
+    auto client = m_clients.begin();
+    while (client != m_clients.end()) {
+        if ((*client).second->getState() == Client::DISCONNECTED) {
+            if ((*client).second->hasPlayed()) {
+                notifyConnected((*client).second.get(), false);
             }
-            LOG_NOTICE << "client disconnected (EID " << client.second->getEID() << "): " << client.second->socket().remote_endpoint() << "\n";
-            m_clients.erase(client.first);
-        } else if (client.second->getState() == Client::PLAYING) {
+            LOG_NOTICE << "client disconnected (EID " << (*client).second->getEID() << "): " << (*client).second->socket().remote_endpoint() << "\n";
+            client = m_clients.erase(client);
+            continue;
+        } else if ((*client).second->getState() == Client::PLAYING) {
             if (!(m_curTick % 20)) {
-                client.second->sendTimeUpdate(m_curTick);
+                (*client).second->sendTimeUpdate(m_curTick);
             }
 
-            sendUpdatedPositions(client.second.get());
+            sendUpdatedPositions((*client).second.get());
         }
+        ++client;
     }
 
     for (auto & client: m_clients) {
