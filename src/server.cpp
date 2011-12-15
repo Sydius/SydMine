@@ -61,7 +61,7 @@ void Server::sendUpdatedPositions(Client * client)
     Chunk::Coord chunkX = client->getChunkX();
     Chunk::Coord chunkZ = client->getChunkZ();
 
-    static const Chunk::Coord chunkRange = 9; // TODO: replace with server conf
+    static const Chunk::Coord chunkRange = getChunkRange();
     for (Chunk::Coord cx = chunkX - chunkRange; cx <= chunkX + chunkRange; cx++) {
         for (Chunk::Coord cz = chunkZ - chunkRange; cz <= chunkZ + chunkRange; cz++) {
             client->updateChunk(getChunk(1, cx, cz), cx, cz); // TODO: replace world value
@@ -95,6 +95,11 @@ bool Server::tick(void)
 
     m_curTick++;
     return true;
+}
+
+int Server::getChunkRange(void) const
+{
+    return 9; // TODO: config
 }
 
 int Server::getPlayingCount(void) const
@@ -134,6 +139,15 @@ void Server::digBlock(int x, int y, int z)
     Chunk::Coord chunkZ = floor(double(z) / 16);
     Chunk & chunk = getChunk(1, chunkX, chunkZ); // TODO: replace world value
     
+    for (auto & client: m_clients) {
+        if (client.second->getState() == Client::PLAYING) {
+            if (abs(client.second->getChunkX() - chunkX) < getChunkRange() &&
+                abs(client.second->getChunkZ() - chunkZ) < getChunkRange()) {
+                client.second->updateBlock(x, y, z, 0);
+            }
+        }
+    }
+
     x = x%16;
     z = z%16;
     x = x < 0 ? 16 + x : x;

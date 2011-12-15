@@ -71,6 +71,7 @@ class Client: public Entity
         void removePeer(Client * peer);
 
         void updateChunk(const Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord chunkZ);
+        void updateBlock(int x, int y, int z, int type);
 
         void disconnect(const std::string & reason);
 

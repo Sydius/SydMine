@@ -200,11 +200,22 @@ void Client::updateChunk(const Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord 
     for (auto iter = m_chunksLoaded.begin(); iter != m_chunksLoaded.end(); iter++) {
         auto & coord = *iter;
 
-        if (abs(coord.first - getChunkX()) > 10 || abs(coord.second - getChunkZ()) > 10) {
+        if (abs(coord.first - getChunkX()) > m_server->getChunkRange() ||
+            abs(coord.second - getChunkZ()) > m_server->getChunkRange()) {
             sendInitChunk(coord.first, coord.second, false);
             m_chunksLoaded.erase(iter);
         }
     }
+}
+
+void Client::updateBlock(int x, int y, int z, int type)
+{
+    set(mcCommandType(0x35));
+    set(mcInt(x));
+    set(mcByte(y));
+    set(mcInt(z));
+    set(mcByte(type));
+    set(mcByte(0xFF)); // TODO: meta
 }
 
 void Client::disconnect(const std::string & reason)

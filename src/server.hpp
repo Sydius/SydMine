@@ -14,6 +14,7 @@ class Server
 
         bool tick(void);
 
+        int getChunkRange(void) const;
         int getPlayingCount(void) const;
         int getPlayingMax(void) const;
         std::string getDescription(void) const;
