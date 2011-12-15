@@ -19,6 +19,8 @@ class Server
         std::string getDescription(void) const;
         bool authRequired(void) const;
         unsigned int getTicks(void) const;
+        
+        void digBlock(int x, int y, int z);
 
         void notifyChat(Client * client, const std::string & msg);
         void notifyConnected(Client * client, bool connected);
@@ -31,7 +33,7 @@ class Server
                 const boost::system::error_code & error);
         void checkClientStatus(void);
         void sendUpdatedPositions(Client * client);
-        const Chunk & getChunk(int world, Chunk::Coord x, Chunk::Coord y);
+        Chunk & getChunk(int world, Chunk::Coord x, Chunk::Coord y);
 
         boost::asio::ip::tcp::acceptor m_acceptor;
         ClientList m_clients;

@@ -503,7 +503,11 @@ void Client::handleDig(void)
     mcByte face;
     if (!get(face)) return read();
 
-    // TODO: do something?
+    // TODO: validate
+
+    if (status == 2) { // Finish digging
+        m_server->digBlock(x, y, z);
+    }
 }
 
 void Client::handleHoldingChange(void)

@@ -61,7 +61,7 @@ void Server::sendUpdatedPositions(Client * client)
     Chunk::Coord chunkX = client->getChunkX();
     Chunk::Coord chunkZ = client->getChunkZ();
 
-    static const Chunk::Coord chunkRange = 9;
+    static const Chunk::Coord chunkRange = 9; // TODO: replace with server conf
     for (Chunk::Coord cx = chunkX - chunkRange; cx <= chunkX + chunkRange; cx++) {
         for (Chunk::Coord cz = chunkZ - chunkRange; cz <= chunkZ + chunkRange; cz++) {
             client->updateChunk(getChunk(1, cx, cz), cx, cz); // TODO: replace world value
@@ -73,7 +73,7 @@ void Server::sendUpdatedPositions(Client * client)
     }
 }
 
-const Chunk & Server::getChunk(int world, Chunk::Coord x, Chunk::Coord y)
+Chunk & Server::getChunk(int world, Chunk::Coord x, Chunk::Coord y)
 {
     std::string key = boost::lexical_cast<std::string>(world) + ":" +
         boost::lexical_cast<std::string>(x) + "-" +
@@ -126,6 +126,19 @@ bool Server::authRequired(void) const
 unsigned int Server::getTicks(void) const
 {
     return m_curTick;
+}
+
+void Server::digBlock(int x, int y, int z)
+{
+    Chunk::Coord chunkX = floor(double(x) / 16);
+    Chunk::Coord chunkZ = floor(double(z) / 16);
+    Chunk & chunk = getChunk(1, chunkX, chunkZ); // TODO: replace world value
+    
+    x = x%16;
+    z = z%16;
+    x = x < 0 ? 16 + x : x;
+    z = z < 0 ? 16 + z : z;
+    chunk.setBlockType(x, y, z, 0);
 }
 
 void Server::notifyChat(Client * client, const std::string & msg)
