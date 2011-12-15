@@ -197,13 +197,16 @@ void Client::updateChunk(const Chunk & chunk, Chunk::Coord chunkX, Chunk::Coord 
     sendChunk(chunkX, chunkZ, chunk);
     m_chunksLoaded.push_back(ChunkCoord(chunkX, chunkZ));
 
-    for (auto iter = m_chunksLoaded.begin(); iter != m_chunksLoaded.end(); iter++) {
+    auto iter = m_chunksLoaded.begin();
+    while (iter != m_chunksLoaded.end()) {
         auto & coord = *iter;
 
         if (abs(coord.first - getChunkX()) > m_server->getChunkRange() ||
             abs(coord.second - getChunkZ()) > m_server->getChunkRange()) {
             sendInitChunk(coord.first, coord.second, false);
-            m_chunksLoaded.erase(iter);
+            iter = m_chunksLoaded.erase(iter);
+        } else {
+            ++iter;
         }
     }
 }
