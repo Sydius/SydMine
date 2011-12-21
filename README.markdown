@@ -15,3 +15,5 @@ on hold.
 
 The basic networking layer is in (albeit messy) and you can log in,
 walk around, and destroy blocks. Nothing else works.
+
+It's messy prototype code; I'm not proud of it.
